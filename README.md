@@ -2,18 +2,19 @@
 
 [ ] repo
 
-[*] create conda env (py 3.11)
+[✅] create conda env (py 3.11)
 
-[ ] install model-card-toolkit, streamlit
+[✅] install model-card-toolkit, streamlit
 
 * install [bazel](https://bazel.build/install/ubuntu)
 * install model-card-toolkit from [source](https://www.tensorflow.org/responsible_ai/model_card_toolkit/guide/install#installing_from_source)
 
 [ ] make a streamlit UI that configures a modelcard; 
 * supportive components: [streamlit-pydantic](https://github.com/lukasmasuch/streamlit-pydantic#examples), at the moment streamlit-pydantic depends on pydantic v1 (pip install "pydantic==1.*")
-* [how to create multi-page app](https://docs.streamlit.io/get-started/tutorials/create-a-multipage-app)
+* how to create multi-page app [doc](https://docs.streamlit.io/library/advanced-features/multipage-apps),[blog](https://docs.streamlit.io/get-started/tutorials/create-a-multipage-app)
+* [statefull app, useful for multipage](https://docs.streamlit.io/library/advanced-features/session-state)
 
-[ ] Display MC report with the UI?
+[✅] Display MC report with the UI?
 
 [ ] save data to file before using database
 
