@@ -22,6 +22,9 @@
 [ ] 
         
 
+## note to dev workflow in GitHub codespaces:
+* use conda env "/workspaces/ai-assess-project/.conda"
+
 # References
 ## Toolkits and Frameworks
 * Microsoft RAI Toolbox [Homepage](https://responsibleaitoolbox.ai/) | [Tools and Practices](https://www.microsoft.com/en-us/ai/tools-practices) | [workshop](https://github.com/microsoft/responsible-ai-workshop) | [Github Repo](https://github.com/microsoft/responsible-ai-toolbox) + [JupyterLab Extension](https://github.com/microsoft/responsible-ai-toolbox-tracker) | [Robust ML](https://github.com/microsoft/robustlearn) | [AzureML](https://github.com/Azure/RAI-vNext-Preview) | [Mapping of Azure AI Sevices and RAI concerns](https://learn.microsoft.com/en-us/azure/ai-services/responsible-use-of-ai-overview) | [Azure BestPractices TrustedAI Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/innovate/best-practices/trusted-ai)
