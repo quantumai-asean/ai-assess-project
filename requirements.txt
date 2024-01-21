@@ -1,0 +1,5 @@
+#dependencies install bazel or use bazelisk
+git+https://github.com/tensorflow/model-card-toolkit.git
+#git+https://github.com/pydantic/pydantic.git
+git+https://github.com/LukasMasuch/streamlit-pydantic.git
+streamlit==1.30
