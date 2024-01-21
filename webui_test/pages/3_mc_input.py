@@ -1,4 +1,5 @@
 import streamlit as st
+import model_card_toolkit as mctlib
 #from pydantic import BaseModel, Field, StringConstraints, ConfigDict
 #import datetime
 import streamlit_pydantic as sp
@@ -36,4 +37,12 @@ with st.form(key="pydantic_form"):
     input_model = sp.pydantic_input(key="mc_input_model", model=pydModelCard, group_optional_fields="expander")
     submit = st.form_submit_button(label="update")
 
+if submit:
+    #update mct and store proto
+    # initialize mdc and toolkit
+    mct = mctlib.ModelCardToolkit()
+
+    model_card = mct.scaffold_assets() #ref https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/core.py#L300
+
+    # ....
 

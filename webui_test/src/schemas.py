@@ -23,8 +23,8 @@ class pydOwner(BaseModel):
       be individual email addresses, a team mailing list expressly, or a
       monitored feedback form.
   """
-  name: str = Field(..., description="The name of the model owner.")
-  contact: str = Field(..., description="The contact information for the model owner or owners. These could be individual email addresses, a team mailing list expressly, or a monitored feedback form.")
+  name: Annotated[str, StringConstraints(max_length=40)] = Field(..., description="The name of the model owner.")
+  contact: Annotated[str, StringConstraints(max_length=60)] = Field(..., description="The contact information for the model owner or owners. These could be individual email addresses, a team mailing list expressly, or a monitored feedback form.")
 
 class pydVersion(BaseModel):
   """The information about verions of a model.

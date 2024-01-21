@@ -1,5 +1,7 @@
-#dependencies install bazel or use bazelisk
+#dependencies install bazel or use bazelisk, ref https://github.com/bazelbuild/bazelisk
+#tool to conenct to postgresql sudo apt-get install postgresql-client
 git+https://github.com/tensorflow/model-card-toolkit.git
 #git+https://github.com/pydantic/pydantic.git
 git+https://github.com/LukasMasuch/streamlit-pydantic.git
 streamlit==1.30
+psycopg[binary]

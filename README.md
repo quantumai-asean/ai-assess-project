@@ -1,6 +1,6 @@
 # Project Planning
 
-[ ] repo
+[ ] create [dev.container](https://github.com/devcontainers/templates/tree/main/src/anaconda-postgres) 
 
 [✅] create conda env (py 3.11)
 
@@ -18,6 +18,21 @@
 [✅] Display MC report with the UI?
 
 [ ] save data to file before using database
+* use postgresql
+* how to add uuid as key to a table?:
+
+                # add extension to generate uuid
+                CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; 
+                
+                #create a table with id as primary key, add constraint to be unique on selected column(s), and automatically generate UUID, e.g.
+                CREATE TABLE owner (                                                     
+                    name            varchar(40),
+                    contact             varchar(60),
+                    id SERIAL PRIMARY KEY, # unique running sequence as key
+                    hash_key UUID DEFAULT uuid_generate_v4() UNIQUE # automatically genearte UUID 
+                );
+                ALTER TABLE owner ADD CONSTRAINT your_table_unique_constraint UNIQUE (name); #unique on selected column(s)
+* install python psql module such as psycopg
 
 [ ] install other assessment libraries: fairlearn, aequitas
 

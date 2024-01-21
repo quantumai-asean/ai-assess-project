@@ -8,7 +8,7 @@ st.set_page_config(
 
 st.write("# Welcome to AI Ethics Assessment Page! 👋")
 
-st.sidebar.success("Select a page")
+#st.sidebar.success("Select a page")
 
 st.markdown(
     """
