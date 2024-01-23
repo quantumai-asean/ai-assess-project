@@ -20,11 +20,14 @@ with st.form(key="user_form"):
 if submit:
     try:
         update_owner_str = f"INSERT INTO owner (name,contact) VALUES ('{input_model['name']}', '{input_model['contact']}');"
-        with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
+        #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
+        configs = st.session_state.confs['database']['server']
+        conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
+        with psycopg.connect(conn_str) as conn:
             with conn.cursor() as cur:
                 cur.execute(update_owner_str)
                 # Make the changes to the database persistent
             conn.commit()
-        st.write("Success!")
+        st.info("Success!")
     except errors.UniqueViolation as e:
-        st.write("Record with same Name already exists in record.")
+        st.error("Record with same Name already exists in record.")
