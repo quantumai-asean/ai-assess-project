@@ -26,12 +26,14 @@
                 
                 #create a table with id as primary key, add constraint to be unique on selected column(s), and automatically generate UUID, e.g.
                 CREATE TABLE owner (                                                     
-                    name            varchar(40),
+                    name            varchar(40) NOT NULL,
                     contact             varchar(60),
                     id SERIAL PRIMARY KEY, # unique running sequence as key
                     hash_key UUID DEFAULT uuid_generate_v4() UNIQUE # automatically genearte UUID 
                 );
-                ALTER TABLE owner ADD CONSTRAINT your_table_unique_constraint UNIQUE (name); #unique on selected column(s)
+                #ALTER TABLE owner ADD CONSTRAINT your_table_unique_constraint UNIQUE (name); #unique on selected column(s)
+                
+                CREATE UNIQUE INDEX your_table_unique_constraint ON owner (LOWER(name));
 * install python psql module such as psycopg
 
 [ ] install other assessment libraries: fairlearn, aequitas
