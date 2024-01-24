@@ -38,7 +38,7 @@ def insert_userregistration_database(input_model):
     PASSWORD_DIGEST_SIZE = 32
     try:
         h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
-        h.update(input_model['password'].encode())
+        h.update(input_model['create_password'].encode())
         update_owner_str = f"""INSERT INTO userlogin (name, email, url, country, password) 
                             VALUES ( '{input_model['name']}', '{input_model['email'].lower()}', '{input_model['url']}',  
                             '{EnumCountry(input_model['country']).name}',  '{h.hexdigest()}' ) 

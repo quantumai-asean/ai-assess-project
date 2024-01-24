@@ -23,7 +23,9 @@ class pydUserRegistrationInput(BaseModel):
   create_password: Annotated[str, StringConstraints(max_length=30)] = Field(..., writeOnly=True)
   confirm_password: Annotated[str, StringConstraints(max_length=30)] = Field(..., writeOnly=True)
 
-
+class pydUserLogin(BaseModel):
+   email: Annotated[str, StringConstraints(max_length=50)]
+   password: Annotated[str, StringConstraints(max_length=30)] = Field(..., writeOnly=True)
 
 
 
