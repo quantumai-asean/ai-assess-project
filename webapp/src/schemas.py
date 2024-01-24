@@ -3,6 +3,31 @@ import datetime
 from typing_extensions import Annotated
 import dataclasses
 from typing import Any, Dict, List, Optional, Union
+from .enums import EnumCountry
+
+
+class pydUserRegistrationInput(BaseModel):
+  """The information about owners of a model.
+
+  Attributes:
+    name: The name of the model owner.
+    email: email
+    url: company URL
+    country: Dict or List 
+    password: hash
+  """
+  name: Annotated[str, StringConstraints(max_length=50)] = Field(..., description="The company name of the model owner.")
+  email: Annotated[str, StringConstraints(max_length=50)] = Field(..., description="Owner's email. Will be used as login prompt. Must not be blank")
+  url: Annotated[str, StringConstraints(max_length=50)] = Field(..., description="Owner's company URL.")
+  country: EnumCountry = Field(..., description="Select your country from the dropdownlist")
+  create_password: Annotated[str, StringConstraints(max_length=30)] = Field(..., writeOnly=True)
+  confirm_password: Annotated[str, StringConstraints(max_length=30)] = Field(..., writeOnly=True)
+
+
+
+
+
+
 
 # First need to create a pydantic model equivalent of ModelDetails 
 # tip : Annotated is a type hint that allows you to attach additional metadata to a type.
@@ -11,7 +36,7 @@ class pydModelDetails(BaseModel):
     """
     model_config = ConfigDict(from_attributes=True)
     name: Annotated[str, StringConstraints(max_length=20)] = Field(..., description="The name of the model.")
-    overview: str = Field(..., description="A description of the model card. of this")
+    overview: str = Field(..., format="multi-line", description="A description of the model card. of this")
     documentation: str = Field(..., description="A more thorough description of the model and its usage.")
 
 class pydOwner(BaseModel):
@@ -23,8 +48,8 @@ class pydOwner(BaseModel):
       be individual email addresses, a team mailing list expressly, or a
       monitored feedback form.
   """
-  name: Annotated[str, StringConstraints(max_length=40)] = Field(..., description="The name of the model owner.")
-  contact: Annotated[str, StringConstraints(max_length=60)] = Field(..., description="The contact information for the model owner or owners. These could be individual email addresses, a team mailing list expressly, or a monitored feedback form.")
+  name: Annotated[str, StringConstraints(max_length=50)] = Field(..., description="The name of the model owner.")
+  contact: Annotated[str, StringConstraints(max_length=50)] = Field(..., description="The contact information for the model owner or owners. These could be individual email addresses, a team mailing list expressly, or a monitored feedback form.")
 
 class pydVersion(BaseModel):
   """The information about verions of a model.
@@ -109,11 +134,11 @@ class pydConsiderations(BaseModel):
       of this model? For each risk, you may also provide a mitigation strategy
       that you've implemented, or one that you suggest to users.
   """
-  target_users: str = Field(..., description="Who are the intended users of the model? You might also include information about the downstream users you expect to interact with your model.") 
-  use_cases: str = Field(..., description="What are the intended use cases of the model?") 
-  limitations: str = Field(..., description="What are the known limitations of the model? This may include technical limitations, or conditions that may degrade model performance.") 
-  tradeoffs: str = Field(..., description=" What are the known accuracy/performance tradeoffs for the model?") 
-  ethical_considerations: str = Field(..., description="What are the ethical risks involved in application of this model? For each risk, you may also provide a mitigation strategy that you've implemented, or one that you suggest to users.") 
+  target_users: str = Field(..., format="multi-line", description="Who are the intended users of the model? You might also include information about the downstream users you expect to interact with your model.") 
+  use_cases: str = Field(..., format="multi-line", description="What are the intended use cases of the model?") 
+  limitations: str = Field(..., format="multi-line", description="What are the known limitations of the model? This may include technical limitations, or conditions that may degrade model performance.") 
+  tradeoffs: str = Field(..., format="multi-line", description=" What are the known accuracy/performance tradeoffs for the model?") 
+  ethical_considerations: str = Field(..., format="multi-line", description="What are the ethical risks involved in application of this model? For each risk, you may also provide a mitigation strategy that you've implemented, or one that you suggest to users.") 
 
 
 class pydModelCard(BaseModel):
