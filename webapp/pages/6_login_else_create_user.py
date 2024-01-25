@@ -6,7 +6,9 @@ import psycopg
 from psycopg import errors
 from hashlib import blake2s
 from src.enums import EnumCountry 
+from src.utils import *
 
+streamlit_session_states_init()
 
 #experiments on rendering INput Output
 st.set_page_config(
@@ -14,10 +16,6 @@ st.set_page_config(
     page_icon="👨🏻‍💼",
 )
 
-if 'user_logged_in' not in st.session_state:
-    st.session_state.user_logged_in = False
-    st.session_state.show_user_register  = False
-    st.session_state.show_user_login  = False
 
 PASSWORD_DIGEST_SIZE = 32
 PASSWORD_CONSTRAINT = 8
@@ -50,6 +48,12 @@ def show_login():
                 st.info("Wrong credentials")
         except Exception as e:
             st.error(e)
+    elif st.button("No profile yet? Create one"):
+        st.session_state.show_user_login = False
+        st.session_state.show_user_register = True
+        st.session_state.user_logged_in = False
+        st.rerun()
+
 
 
 def input_validation (input_model) -> bool:   
@@ -103,19 +107,38 @@ def show_create():
         #check password
         if input_validation(input_model):
             insert_userregistration_database(input_model)
+    elif st.button("Login as Registered User"):
+        st.session_state.show_user_login = True
+        st.session_state.show_user_register = False
+        st.session_state.user_logged_in = False
+        st.rerun()
 
+
+def show_ModelOwnerView():
+    if st.button("Logout"):
+        st.session_state.user_logged_in = False
+        st.session_state.show_user_login = False
+        st.session_state.show_user_register = False
+        st.rerun()
+
+
+def show_noop():
+    pass
+
+show_function = show_noop
 
 if st.session_state.user_logged_in:
     # display user's data and user's Model's card
     page_title = "Model Owner's Details"
+    show_function = show_ModelOwnerView
     show_button = False
 elif st.session_state.show_user_login:
     page_title = "Login with your credentials"
-    show_login()
+    show_function = show_login
     show_button = False
 elif st.session_state.show_user_register:
     page_title = "Create A Model Owner's Profile"
-    show_create()
+    show_function = show_create
     show_button = False
 else:
     page_title = "Login or Create a Profile"
@@ -124,7 +147,7 @@ else:
 
 st.title(page_title)
 
-
+show_function()
 
 
 
