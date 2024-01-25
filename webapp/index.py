@@ -26,7 +26,11 @@ try:
         confs = tomllib.load(f)
         if 'confs' not in st.session_state:
             st.session_state.confs = confs
+            st.session_state.user_logged_in = False
+            st.session_state.user_register  = False
             print(confs)
-
 except Exception as e:
     st.error(e)
+
+
+   
