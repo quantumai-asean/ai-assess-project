@@ -16,19 +16,19 @@ import streamlit_pydantic as sp
 #    Risk, SensitiveData, Tradeoff, UseCase, User, Version, load_model_card
 #)
 
-
+from src.utils import *
 from src.schemas import *
 
-
+streamlit_session_states_init()
 
 #experiments on rendering INput Output
 st.set_page_config(
-    page_title="Registering a Model Card",
+    page_title="Assessment",
     page_icon="🚀",
 )
 
 
-st.title("Registering A Model Card")
+st.title("AI Model Assessment on Ethical AI Principles")
 
 
 
