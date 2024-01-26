@@ -39,7 +39,7 @@ class pydModelDetails(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     name: Annotated[str, StringConstraints(max_length=20)] = Field(..., description="The name of the model.")
     overview: str = Field(..., format="multi-line", description="A description of the model card. of this")
-    documentation: str = Field(..., description="A more thorough description of the model and its usage.")
+    #documentation: str = Field(..., description="A more thorough description of the model and its usage.")
 
 class pydOwner(BaseModel):
   """The information about owners of a model.
@@ -143,6 +143,11 @@ class pydConsiderations(BaseModel):
   ethical_considerations: str = Field(..., format="multi-line", description="What are the ethical risks involved in application of this model? For each risk, you may also provide a mitigation strategy that you've implemented, or one that you suggest to users.") 
 
 
+class pydConsiderations2(BaseModel):
+  target_users: str = Field(..., format="multi-line", description="Who are the intended users of the model? You might also include information about the downstream users you expect to interact with your model.") 
+  feature_modalities:   
+
+
 class pydModelCard(BaseModel):
     """This section provides a general, high-level description of the model.
 
@@ -166,7 +171,7 @@ class pydModelCard(BaseModel):
     """
     #model_config = ConfigDict(from_attributes=True)
     Model : pydModelDetails
-    Owner: pydOwner 
+    #Owner: pydOwner 
     Version: pydVersion
     Considerations: pydConsiderations
     #License: pydLicense

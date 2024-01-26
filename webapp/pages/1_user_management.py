@@ -12,7 +12,7 @@ streamlit_session_states_init()
 
 #experiments on rendering INput Output
 st.set_page_config(
-    page_title="User Page",
+    page_title="User Management",
     page_icon="👨🏻‍💼",
 )
 
@@ -26,6 +26,7 @@ def show_login():
         submit = st.form_submit_button(label="submit")
 
     if submit:
+        
         try:
             login_user_query = f"SELECT id, password FROM userlogin WHERE email = '{input_model['email']}'"
             #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
@@ -40,15 +41,19 @@ def show_login():
             h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
             h.update(input_model['password'].encode())
 
-            if q[1] == h.hexdigest():
-                st.info("Login success!")
-                st.session_state.user_logged_in = True
-                st.rerun()
+            if q:
+                if q[1] == h.hexdigest():
+                    st.info("Login success!")
+                    st.session_state.user_logged_in = True
+                    st.rerun()
+                    #st.switch_page("pages/2_model_management.py")
+                else:
+                    st.warning("Wrong credentials")
             else:
-                st.info("Wrong credentials")
+                st.warning("Wrong credentials")
         except Exception as e:
             st.error(e)
-    elif st.button("No profile yet? Create one"):
+    if st.button("No profile yet? Create one"):
         st.session_state.show_user_login = False
         st.session_state.show_user_register = True
         st.session_state.user_logged_in = False
@@ -92,6 +97,10 @@ def insert_userregistration_database(input_model):
                 # Make the changes to the database persistent
             conn.commit()
         st.info("Success!")
+        st.session_state.show_user_login = True
+        st.session_state.show_user_register = False
+        st.session_state.user_logged_in = False
+        st.rerun()
     except errors.UniqueViolation as e:
         st.error("Record with same Name or Email already exists.")
 
@@ -107,7 +116,7 @@ def show_create():
         #check password
         if input_validation(input_model):
             insert_userregistration_database(input_model)
-    elif st.button("Login as Registered User"):
+    if st.button("Login as Registered User"):
         st.session_state.show_user_login = True
         st.session_state.show_user_register = False
         st.session_state.user_logged_in = False
@@ -129,7 +138,7 @@ show_function = show_noop
 
 if st.session_state.user_logged_in:
     # display user's data and user's Model's card
-    page_title = "Model Owner's Details"
+    page_title = "Your Model Cards"
     show_function = show_ModelOwnerView
     show_button = False
 elif st.session_state.show_user_login:
