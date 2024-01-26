@@ -14,7 +14,7 @@
 * how to create multi-page app [doc](https://docs.streamlit.io/library/advanced-features/multipage-apps),[blog](https://docs.streamlit.io/get-started/tutorials/create-a-multipage-app)
 * [statefull app, useful for multipage](https://docs.streamlit.io/library/advanced-features/session-state)
 * [pydantic doc](https://docs.pydantic.dev/latest/concepts/models/#arbitrary-class-instances)
-
+* try to use Frontend to do the assessment first, then move compute to backend
 [✅] Display MC report with the UI?
 
 [ ] save data to file before using database
