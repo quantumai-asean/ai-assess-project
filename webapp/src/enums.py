@@ -1,5 +1,10 @@
 import enum
 
+class EnumFeatureType(enum.Enum):
+    TAB = "Tabular"
+    IMG = "Image"
+
+
 class EnumCountry(enum.Enum):
     AW = 'Aruba'
     AF = 'Afghanistan'

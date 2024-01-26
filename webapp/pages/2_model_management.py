@@ -39,10 +39,9 @@ def show_create_new_assessment():
         #update mct and store proto
         # initialize mdc and toolkit
         mct = mctlib.ModelCardToolkit()
+        #ref https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/core.py#L300
+        model_card = mct.scaffold_assets() 
 
-        model_card = mct.scaffold_assets() #ref https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/core.py#L300
-
-        # ....
 
 if st.session_state.user_logged_in:
     show_create_new_assessment()

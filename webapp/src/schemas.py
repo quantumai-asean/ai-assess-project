@@ -3,7 +3,7 @@ import datetime
 from typing_extensions import Annotated
 import dataclasses
 from typing import Any, Dict, List, Optional, Union
-from .enums import EnumCountry
+from .enums import EnumCountry, EnumFeatureType
 
 
 class pydUserRegistrationInput(BaseModel):
@@ -68,9 +68,9 @@ class pydVersion(BaseModel):
     date: The date this version was released.
     diff: The changes from the previous version.
   """
-  name: str = Field(..., description="The name of the version.")
-  date: str = Field(..., description="The date this version was released.")
-  diff: str = Field(..., description="The changes from the previous version.")
+  version_name: str = Field(..., description="The name of the version.")
+  release_date: str = Field(..., description="The date this version was released.")
+  changes: str = Field(..., description="The changes from the previous version.")
 
 class pydLicense(BaseModel):
   """The license information for a model.
@@ -111,6 +111,7 @@ class pydModelDataInterface(BaseModel):
    """
    model_api: str = Field(..., description="API endpoint for calling inference function of the model (URL).")
    data_api : str  = Field(..., description="API endpoint for sampling evaluation dataset, must adhere to specified format")
+   feature_type: EnumFeatureType = Field(..., description="Select the type of feature to the model.")
 
 class pydConsiderations(BaseModel):
   """Considerations related to model construction, training, and application.
@@ -138,14 +139,9 @@ class pydConsiderations(BaseModel):
   """
   target_users: str = Field(..., format="multi-line", description="Who are the intended users of the model? You might also include information about the downstream users you expect to interact with your model.") 
   use_cases: str = Field(..., format="multi-line", description="What are the intended use cases of the model?") 
-  limitations: str = Field(..., format="multi-line", description="What are the known limitations of the model? This may include technical limitations, or conditions that may degrade model performance.") 
-  tradeoffs: str = Field(..., format="multi-line", description=" What are the known accuracy/performance tradeoffs for the model?") 
+  #limitations: str = Field(..., format="multi-line", description="What are the known limitations of the model? This may include technical limitations, or conditions that may degrade model performance.") 
+  #tradeoffs: str = Field(..., format="multi-line", description=" What are the known accuracy/performance tradeoffs for the model?") 
   ethical_considerations: str = Field(..., format="multi-line", description="What are the ethical risks involved in application of this model? For each risk, you may also provide a mitigation strategy that you've implemented, or one that you suggest to users.") 
-
-
-class pydConsiderations2(BaseModel):
-  target_users: str = Field(..., format="multi-line", description="Who are the intended users of the model? You might also include information about the downstream users you expect to interact with your model.") 
-  feature_modalities:   
 
 
 class pydModelCard(BaseModel):
@@ -170,11 +166,11 @@ class pydModelCard(BaseModel):
     Source: https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/model_card.py#L131
     """
     #model_config = ConfigDict(from_attributes=True)
-    Model : pydModelDetails
+    model_details : pydModelDetails
     #Owner: pydOwner 
-    Version: pydVersion
-    Considerations: pydConsiderations
+    versioning: pydVersion
+    considerations: pydConsiderations
     #License: pydLicense
     #Reference: pydReference 
     #Citation: pydCitation 
-    Interface: pydModelDataInterface 
+    model_interface: pydModelDataInterface 
