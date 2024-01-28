@@ -37,7 +37,7 @@ class pydModelDetails(BaseModel):
     """https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/model_card.py#L131
     """
     model_config = ConfigDict(from_attributes=True)
-    name: Annotated[str, StringConstraints(max_length=20)] = Field(..., description="The name of the model.")
+    name: Annotated[str, StringConstraints(max_length=30)] = Field(..., description="The name of the model.")
     overview: str = Field(..., format="multi-line", description="A description of the model card. of this")
     #documentation: str = Field(..., description="A more thorough description of the model and its usage.")
 
@@ -68,7 +68,7 @@ class pydVersion(BaseModel):
     date: The date this version was released.
     diff: The changes from the previous version.
   """
-  version_name: str = Field(..., description="The name of the version.")
+  version_name: Annotated[str, StringConstraints(max_length=30)] = Field(..., description="The name of the version.")
   release_date: str = Field(..., description="The date this version was released.")
   changes: str = Field(..., description="The changes from the previous version.")
 
@@ -109,8 +109,8 @@ class pydModelDataInterface(BaseModel):
       data_api: API endpoint for sampling for evaluation dataset, must adhere to our format (pytorch), need validation method
 
    """
-   model_api: str = Field(..., description="API endpoint for calling inference function of the model (URL).")
-   data_api : str  = Field(..., description="API endpoint for sampling evaluation dataset, must adhere to specified format")
+   api_url: str = Field(..., description="API URL for calling inference and data sampling functions of the model.")
+   #data_api : str  = Field(..., description="API endpoint for sampling evaluation dataset, must adhere to specified format")
    feature_type: EnumFeatureType = Field(..., description="Select the type of feature to the model.")
 
 class pydConsiderations(BaseModel):
@@ -173,4 +173,4 @@ class pydModelCard(BaseModel):
     #License: pydLicense
     #Reference: pydReference 
     #Citation: pydCitation 
-    model_interface: pydModelDataInterface 
+    interface: pydModelDataInterface 

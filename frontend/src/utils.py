@@ -23,7 +23,7 @@ def streamlit_session_states_init():
     if 'confs' not in st.session_state:
         try:
             #https://docs.python.org/3.11/library/tomllib.html#module-tomllib
-            with open("webapp/configs.toml", "rb") as f:
+            with open("frontend/configs.toml", "rb") as f:
                 confs = tomllib.load(f)
                 st.session_state.confs = confs
         except Exception as e:
