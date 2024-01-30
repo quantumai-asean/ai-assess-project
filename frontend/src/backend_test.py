@@ -116,11 +116,13 @@ class BACKEND_TEST:
             )
             fig = metric_frame.by_group.plot.bar(
                 subplots=True,
-                layout=[3, 3],
+                layout=[3, 2],
                 legend=False,
-                figsize=[12, 8],
-                title="Show all metrics",
+                figsize=[7, 12],
+                title="Fairness Assessment",
             )
+
+            print("performance mf bygroup:\n", metric_frame.by_group)
 
             ## Customize plots with ylim
             #metric_frame.by_group.plot(
@@ -163,9 +165,9 @@ class BACKEND_TEST:
             #    figsize=[12, 8],
             #    title="Show count metric in pie chart",
             #)
-            fig[0][0].figure.savefig("metricFrame.png")
+            #fig[0][0].figure.savefig("metricFrame.png")
 
-            return figure_to_base64str(fig[0][0].figure)
+            return metric_frame.by_group, figure_to_base64str(fig[0][0].figure)
 
 
         except Exception as e:

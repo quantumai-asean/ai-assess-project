@@ -2,7 +2,7 @@ import streamlit as st
 import model_card_toolkit as mctlib
 
 import streamlit_pydantic as sp
-
+import pandas as pd
 from src.utils import *
 from src.schemas import *
 from src.backend_test import BACKEND_TEST
@@ -14,6 +14,20 @@ st.set_page_config(
     page_title="Create New Assessment Job",
     page_icon="🚀",
 )
+
+def expand_performance_metrics(performance):
+    expand_perf = [] #mctlib.PerformanceMetric()
+    #{'type': 'accuracy', 'value': cat_accuracy, 'slice': 'cat'},
+    if isinstance(performance, pd.DataFrame):
+        for c in performance.columns:
+            for i in performance.index:
+                #element = {'type': c, 'value': performance[c][i], 'slice': i  }
+                element = mctlib.PerformanceMetric(type = c, value= "%0.4f" % performance[c][i], slice=i)
+                expand_perf.append(element)
+    return expand_perf
+
+
+
 
 def show_create_new_assessment():
     st.title("Create New Assessment Job")
@@ -29,16 +43,19 @@ def show_create_new_assessment():
         endpoint = input_model["interface"]["api_url"]
         if test_backend.check_endpoints(ftype, endpoint):
             st.info("Interface validation passed!")
-            #proceed with assessments
-            graphics = test_backend.fairness_assess()
-
             # initialize mdc and toolkit  
             mct = mctlib.ModelCardToolkit()
             #ref https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/core.py#L300
             model_card = mct.scaffold_assets() 
 
+            #proceed with assessments
+            #https://www.tensorflow.org/responsible_ai/model_card_toolkit/api_docs/python/model_card_toolkit/QuantitativeAnalysis
+            performance, graphics = test_backend.fairness_assess() # shd be the entire qualitative assessment
+
+            model_card.quantitative_analysis.performance_metrics = expand_performance_metrics(performance)
+
             model_card.quantitative_analysis.graphics.collection = [
-                mctlib.Graphic(name='Fairness', image=graphics),
+                mctlib.Graphic(name='Fairness Metrics', image=graphics),
             ]
             #update mdc into toolkit
             mct.update_model_card(model_card)
@@ -51,7 +68,7 @@ def show_create_new_assessment():
 
             # to render HTML string with streamlit: https://docs.streamlit.io/library/components/components-api
 
-            st.components.v1.html(html, height=700, scrolling=True)
+            st.components.v1.html(html, height=1200, scrolling=True)
         else:
             st.warning("Interface validation failed!")
 
