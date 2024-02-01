@@ -1,15 +1,13 @@
 # Project Planning
 
-[ ] create [dev.container](https://github.com/devcontainers/templates/tree/main/src/anaconda-postgres) 
-
-[✅] create conda env (py 3.11)
+[✅] use dev container, create conda env (py 3.11)
 
 [✅] install model-card-toolkit, streamlit
 
 * install [bazel](https://bazel.build/install/ubuntu)
 * install model-card-toolkit from [source](https://www.tensorflow.org/responsible_ai/model_card_toolkit/guide/install#installing_from_source)
 
-[ ] make a streamlit UI that configures a modelcard; 
+[✅] make a streamlit UI that configures a modelcard; 
 * supportive components: [streamlit-pydantic](https://github.com/lukasmasuch/streamlit-pydantic#examples), install pydantic from source
 * how to create multi-page app [doc](https://docs.streamlit.io/library/advanced-features/multipage-apps),[blog](https://docs.streamlit.io/get-started/tutorials/create-a-multipage-app)
 * [statefull app, useful for multipage](https://docs.streamlit.io/library/advanced-features/session-state)
@@ -36,9 +34,11 @@
                 CREATE UNIQUE INDEX your_table_unique_constraint ON owner (LOWER(name));
 * install python psql module such as psycopg
 
-[ ] install other assessment libraries: fairlearn, aequitas
+[ ] install other assessment libraries: fairlearn
 
-[ ] 
+[ ] save protofile report to database and show them
+
+[ ] try to use VerifyML model card toolkir src to manipulate report template
         
 
 ## note to dev workflow in GitHub codespaces:
