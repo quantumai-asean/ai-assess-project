@@ -34,11 +34,11 @@
                 CREATE UNIQUE INDEX your_table_unique_constraint ON owner (LOWER(name));
 * install python psql module such as psycopg
 
-[ ] install other assessment libraries: fairlearn
+[ ] install other assessment libraries: fairlearn, robustness by perturbation (AI Verify)?, ...
 
 [ ] save protofile report to database and show them
 
-[ ] try to use VerifyML model card toolkir src to manipulate report template
+[ ] try to use VerifyML model card toolkir src to modify report template
         
 
 ## note to dev workflow in GitHub codespaces:
