@@ -25,34 +25,41 @@ def show_login():
         input_model = sp.pydantic_input(key="user_login_model", model=pydUserLogin, group_optional_fields="no")
         submit = st.form_submit_button(label="submit")
 
-    if submit:
-        
-        try:
-            login_user_query = f"SELECT id, password FROM userlogin WHERE email = '{input_model['email']}'"
-            #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
-            configs = st.session_state.confs['database']['server']
-            conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
-            with psycopg.connect(conn_str) as conn:
-                with conn.cursor() as cur:
-                    cur.execute(login_user_query)
-                    q = cur.fetchone()
-                    # Make the changes to the database persistent
+        if submit:
+            
+            try:
+                login_user_query = f"SELECT id, password, name FROM userlogin WHERE email = '{input_model['email']}'"
+                #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
+                configs = st.session_state.confs['database']['server']
+                conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
+                with psycopg.connect(conn_str) as conn:
+                    with conn.cursor() as cur:
+                        cur.execute(login_user_query)
+                        q = cur.fetchone()
+                        # Make the changes to the database persistent
 
-            h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
-            h.update(input_model['password'].encode())
+                h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
+                h.update(input_model['password'].encode())
 
-            if q:
-                if q[1] == h.hexdigest():
-                    st.info("Login success!")
-                    st.session_state.user_logged_in = True
-                    st.rerun()
-                    #st.switch_page("pages/2_model_management.py")
+                if q:
+                    if q[1] == h.hexdigest():
+                        st.info("Login success!")
+                        st.session_state.user_logged_in = True
+                        st.session_state.user_details = {
+                            'id'   : q[0],
+                            'email': input_model['email'],
+                            'name' : q[2],
+                            'role' : 'admin'
+                        }
+                        
+                        st.rerun()
+                        #st.switch_page("pages/2_model_management.py")
+                    else:
+                        st.warning("Wrong credentials")
                 else:
                     st.warning("Wrong credentials")
-            else:
-                st.warning("Wrong credentials")
-        except Exception as e:
-            st.error(e)
+            except Exception as e:
+                st.error(e)
     if st.button("No profile yet? Create one"):
         st.session_state.show_user_login = False
         st.session_state.show_user_register = True
@@ -111,11 +118,11 @@ def show_create():
         input_model = sp.pydantic_input(key="user_registration", model=pydUserRegistrationInput, group_optional_fields="no")
         submit_registration = st.form_submit_button(label="submit")
 
-    if submit_registration:
-        #st.write(input_model)
-        #check password
-        if input_validation(input_model):
-            insert_userregistration_database(input_model)
+        if submit_registration:
+            #st.write(input_model)
+            #check password
+            if input_validation(input_model):
+                insert_userregistration_database(input_model)
     if st.button("Login as Registered User"):
         st.session_state.show_user_login = True
         st.session_state.show_user_register = False
@@ -128,6 +135,9 @@ def show_ModelOwnerView():
         st.session_state.user_logged_in = False
         st.session_state.show_user_login = False
         st.session_state.show_user_register = False
+        #mode card page
+        st.session_state.modelcard_showassessment = False
+        st.session_state.modelcard_showmodelcard = False
         st.rerun()
 
 
