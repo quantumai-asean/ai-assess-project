@@ -15,7 +15,6 @@ st.set_page_config(
     page_icon="🚀",
 )
 
-
 def expand_performance_metrics(performance):
     expand_perf = [] #mctlib.PerformanceMetric()
     #{'type': 'accuracy', 'value': cat_accuracy, 'slice': 'cat'},
@@ -27,7 +26,14 @@ def expand_performance_metrics(performance):
                 expand_perf.append(element)
     return expand_perf
 
-
+def set_mcstate(sm:str='', rerun=True):
+    st.session_state.modelcardpage_states['sm_showassessment'] = False
+    st.session_state.modelcardpage_states['sm_showmodelcard'] = False
+    st.session_state.modelcardpage_states['sm_RunAssessment'] = False
+    if sm:
+        st.session_state.modelcardpage_states[sm] = True
+    if rerun:
+        st.rerun()
 
 
 def show_create_new_assessment():
@@ -40,11 +46,16 @@ def show_create_new_assessment():
         st.session_state.modelcardpage_states['sm_RunAssessment'] = False
         if submit:
             st.session_state.modelcardpage_states['mc_registration_input'] = input_model
+            st.session_state.modelcardpage_states['sm_showassessment'] = True
+            st.session_state.modelcardpage_states['sm_showmodelcard'] = False
             st.session_state.modelcardpage_states['sm_RunAssessment'] = True
-            st.session_state.modelcard_showassessment = True
-            st.session_state.modelcard_showmodelcard = False
+            #set_mcstate('sm_showassessment')
             st.rerun()
-        
+
+
+
+
+
           
 def show_modelassessment():
     st.title("Model Assessment")
@@ -87,27 +98,14 @@ def show_modelassessment():
         else:
             st.warning("Interface validation failed!")
             if st.button("Return to Model Card Form"):
-                st.session_state.modelcard_showmodelcard = False
-                st.session_state.modelcard_showassessment = False
-                st.session_state.modelcardpage_states['sm_RunAssessment'] = False
-                st.rerun()
+                set_mcstate()
 
     else:
-        st.warning("Model Assessment Completed")
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Show Assessment Result"):
-                st.session_state.modelcard_showmodelcard = True
-                st.session_state.modelcard_showassessment = False
-                st.rerun() #! not the optimum way to refresh
-        with col2:
-            if st.button("Return to Model Card Form"):
-                st.session_state.modelcard_showmodelcard = False
-                st.session_state.modelcard_showassessment = False
-                st.rerun() #! not the optimum way to refresh 
+        set_mcstate('sm_showmodelcard')
 
 def show_modelcard():
     st.title("Model Assessment Card")
+    st.info("Model Assessment Completed")
     with st.form(key="show_modelcard_form"):
         
         mct = st.session_state.modelcardpage_states['mc_mctoolkit'] 
@@ -127,18 +125,16 @@ def show_modelcard():
                 st.info("Model Card saved succesfully!")
 
     if st.button("run another assessment"):
-        st.session_state.modelcard_showmodelcard = False
-        st.session_state.modelcard_showassessment = False
-        st.rerun()
+        set_mcstate()
 
         
         
 
 
 if st.session_state.user_logged_in:
-    if st.session_state.modelcard_showmodelcard:
+    if st.session_state.modelcardpage_states['sm_showmodelcard']:
         show_modelcard()
-    elif st.session_state.modelcard_showassessment:
+    elif st.session_state.modelcardpage_states['sm_showassessment']:
         show_modelassessment()
     else:
         show_create_new_assessment()

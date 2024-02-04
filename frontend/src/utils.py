@@ -35,10 +35,16 @@ def streamlit_session_states_init():
         st.session_state.show_user_login  = False
 
         #mode card page
-        st.session_state.modelcard_showassessment = False
-        st.session_state.modelcard_showmodelcard = False
+        #st.session_state.modelcard_showassessment = False
+        #st.session_state.modelcard_showmodelcard = False
 
-        st.session_state.modelcardpage_states = {'mc_registration_input': None, 'mc_modelcard': None, 'mc_mctoolkit': None, 'sm_RunAssessment': False}
+        st.session_state.modelcardpage_states = {'mc_registration_input': None, 
+                                                 'mc_modelcard': None, 
+                                                 'mc_mctoolkit': None, 
+                                                 'sm_RunAssessment': False,
+                                                 'sm_showassessment': False,
+                                                 'sm_showmodelcard': False
+                                                 }
 
 
 

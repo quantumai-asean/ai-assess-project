@@ -124,49 +124,6 @@ class BACKEND_TEST:
 
             print("performance mf bygroup:\n", metric_frame.by_group)
 
-            ## Customize plots with ylim
-            #metric_frame.by_group.plot(
-            #    kind="bar",
-            #    ylim=[0, 1],
-            #    subplots=True,
-            #    layout=[3, 3],
-            #    legend=False,
-            #    figsize=[12, 8],
-            #    title="Show all metrics with assigned y-axis range",
-            #)
-
-            ## Customize plots with colormap
-            #metric_frame.by_group.plot(
-            #    kind="bar",
-            #    subplots=True,
-            #    layout=[3, 3],
-            #    legend=False,
-            #    figsize=[12, 8],
-            #    colormap="Accent",
-            #    title="Show all metrics in Accent colormap",
-            #)
-
-            ## Customize plots with kind (note that we are only plotting the "count" metric here because we are showing a pie chart)
-            #metric_frame.by_group[["count"]].plot(
-            #    kind="pie",
-            #    subplots=True,
-            #    layout=[1, 1],
-            #    legend=False,
-            #    figsize=[12, 8],
-            #    title="Show count metric in pie chart",
-            #)
-
-            # Saving plots
-            #fig = metric_frame.by_group[["count"]].plot(
-            #    kind="pie",
-            #    subplots=True,
-            #    layout=[1, 1],
-            #    legend=False,
-            #    figsize=[12, 8],
-            #    title="Show count metric in pie chart",
-            #)
-            #fig[0][0].figure.savefig("metricFrame.png")
-
             return metric_frame.by_group, figure_to_base64str(fig[0][0].figure)
 
 

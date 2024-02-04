@@ -29,15 +29,7 @@ def show_login():
             
             try:
                 login_user_query = f"SELECT id, password, name FROM userlogin WHERE email = '{input_model['email']}'"
-                #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
-                configs = st.session_state.confs['database']['server']
-                conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
-                with psycopg.connect(conn_str) as conn:
-                    with conn.cursor() as cur:
-                        cur.execute(login_user_query)
-                        q = cur.fetchone()
-                        # Make the changes to the database persistent
-
+                q = psql_database_interface(qry=login_user_query, configs=st.session_state.confs['database']['server'], action="query")
                 h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
                 h.update(input_model['password'].encode())
 
@@ -96,13 +88,14 @@ def insert_userregistration_database(input_model):
                             '{EnumCountry(input_model['country']).name}',  '{h.hexdigest()}' ) 
                             ;"""
         #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
-        configs = st.session_state.confs['database']['server']
-        conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
-        with psycopg.connect(conn_str) as conn:
-            with conn.cursor() as cur:
-                cur.execute(update_owner_str)
-                # Make the changes to the database persistent
-            conn.commit()
+        #configs = st.session_state.confs['database']['server']
+        #conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
+        #with psycopg.connect(conn_str) as conn:
+        #    with conn.cursor() as cur:
+        #        cur.execute(update_owner_str)
+        #        # Make the changes to the database persistent
+        #    conn.commit()
+        psql_database_interface(qry=update_owner_str, configs = st.session_state.confs['database']['server'], action="update")
         st.info("Success!")
         st.session_state.show_user_login = True
         st.session_state.show_user_register = False
@@ -136,8 +129,9 @@ def show_ModelOwnerView():
         st.session_state.show_user_login = False
         st.session_state.show_user_register = False
         #mode card page
-        st.session_state.modelcard_showassessment = False
-        st.session_state.modelcard_showmodelcard = False
+        st.session_state.modelcardpage_states['sm_showassessment'] = False
+        st.session_state.modelcardpage_states['sm_showmodelcard'] = False
+        
         st.rerun()
 
 
