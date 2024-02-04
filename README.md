@@ -45,15 +45,6 @@
 * use conda env "/workspaces/ai-assess-project/.conda"
 
 # References
-## Toolkits and Frameworks
-* Microsoft RAI Toolbox [Homepage](https://responsibleaitoolbox.ai/) | [Tools and Practices](https://www.microsoft.com/en-us/ai/tools-practices) | [workshop](https://github.com/microsoft/responsible-ai-workshop) | [Github Repo](https://github.com/microsoft/responsible-ai-toolbox) + [JupyterLab Extension](https://github.com/microsoft/responsible-ai-toolbox-tracker) | [Robust ML](https://github.com/microsoft/robustlearn) | [AzureML](https://github.com/Azure/RAI-vNext-Preview) | [Mapping of Azure AI Sevices and RAI concerns](https://learn.microsoft.com/en-us/azure/ai-services/responsible-use-of-ai-overview) | [Azure BestPractices TrustedAI Framework](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/innovate/best-practices/trusted-ai)
-* MIT AI Lab [Documentation](https://mit-ll-responsible-ai.github.io/responsible-ai-toolbox/) | [Github](https://github.com/mit-ll-responsible-ai/responsible-ai-toolbox/)
-* SG AI Foundation AI Verify [Repo](https://github.com/IMDA-BTG/aiverify) | [UserGuide](https://imda-btg.github.io/aiverify/introduction/how-it-works/) [DeveloperDoc](https://imda-btg.github.io/aiverify-developer-tools/), [StockPlugins](https://imda-btg.github.io/aiverify-developer-tools/stock_plugins/)
-* Google [Tensorflow RAI Toolkit ***](https://www.tensorflow.org/responsible_ai) | [GoogleIO Build with RAI](https://io.google/2021/session/3a44428c-f3b8-4b42-a90b-20271d81e477/?lng=en) | [Toolify on the Same Toolkit](https://www.toolify.ai/ai-news/creating-ai-for-a-better-future-responsible-ai-toolkit-25702)
-* OECD [Report: Regulatory sandboxes in artificial intelligence](https://oecd.ai/en/sandboxes) [site](https://www.oecd.org/sti/regulatory-sandboxes-in-artificial-intelligence-8f80a0e6-en.htm)
-* Awesone RAI Repo [AthenaCore Awesome List](https://github.com/AthenaCore/AwesomeResponsibleAI) | [HolisticAI](https://github.com/holistic-ai) | [VerifyML](https://github.com/cylynx/verifyml) | [Ethical AI Production ML ***](https://github.com/EthicalML/awesome-production-machine-learning)
-* InterpretML [home](https://interpret.ml) | [repo](https://github.com/interpretml/interpret) | [community-repo](https://github.com/interpretml/interpret-community)
-* [Linux Foundation AI and Data Robustness Adversarial Toolbox](https://github.com/Trusted-AI/adversarial-robustness-toolbox)
-* [Turing Report](https://www.turing.ac.uk/sites/default/files/2019-06/understanding_artificial_intelligence_ethics_and_safety.pdf)
+[my repos](https://github.com/quantumai-asean/AI-Ethics-Assessment-Project/blob/main/REFERENCES.md)
 
 
