@@ -59,7 +59,8 @@ def psql_database_interface(qry:str="", configs: dict = None, action: str = "upd
                 cur.execute(qry)
                 # Make the changes to the database persistent
                 if action == "query":
-                    q = cur.fetchone()
+                    #q = cur.fetchone()
+                    q = cur.fetchall()
                 else:
                     q = True
             conn.commit()

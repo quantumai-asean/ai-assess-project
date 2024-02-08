@@ -53,20 +53,19 @@ def show_create_new_assessment():
             st.rerun()
 
 
-
-
-
           
 def show_modelassessment():
     st.title("Model Assessment")
+    print("Hi!")
     if st.session_state.modelcardpage_states['sm_RunAssessment']:
-        
+        print("hello")
         test_backend = BACKEND_TEST()
         input_model = st.session_state.modelcardpage_states['mc_registration_input']
         ftype = input_model["interface"]["feature_type"]
         endpoint = input_model["interface"]["api_url"]
         if test_backend.check_endpoints(ftype, endpoint):
-            st.info("Interface validation passed! Running Asssessment.")
+            print("ok")
+            st.info("Interface validation passed!")
             # initialize mdc and toolkit  
             mct = mctlib.ModelCardToolkit()
             #ref https://github.com/tensorflow/model-card-toolkit/blob/74d7e6d8d3163b830711b226491ccd976a2d7018/model_card_toolkit/core.py#L300
@@ -80,7 +79,8 @@ def show_modelassessment():
 
             #proceed with assessments
             #https://www.tensorflow.org/responsible_ai/model_card_toolkit/api_docs/python/model_card_toolkit/QuantitativeAnalysis
-            performance, graphics = test_backend.fairness_assess() # shd be the entire qualitative assessment
+            with st.spinner('Running Asssessments...'):
+                performance, graphics = test_backend.fairness_assess() # shd be the entire qualitative assessment
 
             model_card.quantitative_analysis.performance_metrics = expand_performance_metrics(performance)
 
@@ -94,6 +94,7 @@ def show_modelassessment():
             st.session_state.modelcardpage_states['mc_mctoolkit'] = mct
 
             st.session_state.modelcardpage_states['sm_RunAssessment'] = False
+            st.session_state.modelcardpage_states['mc_saved'] = False
             st.rerun()
         else:
             st.warning("Interface validation failed!")
@@ -105,31 +106,43 @@ def show_modelassessment():
 
 def show_modelcard():
     st.title("Model Assessment Card")
-    st.info("Model Assessment Completed")
-    with st.form(key="show_modelcard_form"):
-        
-        mct = st.session_state.modelcardpage_states['mc_mctoolkit'] 
-        model_card = st.session_state.modelcardpage_states['mc_modelcard']
-        # Return the model card document as an HTML page
-        #update mdc into toolkits
-        html = mct.export_format()
-        st.components.v1.html(html, height=1200, scrolling=True)
-        submit = st.form_submit_button(label="Save Model Card")
+    #st.info("Model Assessment Completed")
 
-        if submit:
+    mct = st.session_state.modelcardpage_states['mc_mctoolkit'] 
+    model_card = st.session_state.modelcardpage_states['mc_modelcard']
+    # Return the model card document as an HTML page
+    #update mdc into toolkits
+    html = mct.export_format()
+    st.components.v1.html(html, height=1200, scrolling=True)
+
+    
+    #if not st.session_state.modelcardpage_states['mc_saved']:
+    #    with st.form(key="show_modelcard_form"):
+    #        submit = st.form_submit_button(label="Save Model Card")
+    #        if submit:
+    #            st.info("Saving Model Card")
+    #            mc_json = model_card.to_json()
+    #            query_str = f"""INSERT INTO modelcard (name, version, email, modelcard_data) 
+    #            VALUES ('{model_card.model_details.name}','{model_card.model_details.version.name}','{st.session_state.user_details['email']}','{mc_json}'::jsonb);"""
+    #            if psql_database_interface(qry=query_str, configs = st.session_state.confs['database']['server'], action="update"):
+    #                st.info("Model Card saved succesfully!")
+    #            st.session_state.modelcardpage_states['mc_saved'] = True
+    if not st.session_state.modelcardpage_states['mc_saved']:
+        if st.button("save model card"):
             st.info("Saving Model Card")
             mc_json = model_card.to_json()
             query_str = f"""INSERT INTO modelcard (name, version, email, modelcard_data) 
             VALUES ('{model_card.model_details.name}','{model_card.model_details.version.name}','{st.session_state.user_details['email']}','{mc_json}'::jsonb);"""
             if psql_database_interface(qry=query_str, configs = st.session_state.confs['database']['server'], action="update"):
                 st.info("Model Card saved succesfully!")
-
-    if st.button("run another assessment"):
-        set_mcstate()
-
-        
-        
-
+            st.session_state.modelcardpage_states['mc_saved'] = True
+            st.rerun()
+    if st.session_state.user_logged_in:
+        if st.button("run another assessment"):
+            set_mcstate()
+    else:
+        if st.button("Go to User Management Page"):
+            st.switch_page("pages/1_user_management.py")
 
 if st.session_state.user_logged_in:
     if st.session_state.modelcardpage_states['sm_showmodelcard']:
@@ -137,9 +150,25 @@ if st.session_state.user_logged_in:
     elif st.session_state.modelcardpage_states['sm_showassessment']:
         show_modelassessment()
     else:
+        st.session_state.modelcardpage_states['mc_saved'] = False
         show_create_new_assessment()
-    
+elif len(st.query_params.get_all("mc"))>0:
+    mc_id = int(st.query_params.get_all("mc")[0])
+    st.session_state.modelcardpage_states['mc_saved'] = True
+
+    configs = st.session_state.confs['database']['server']
+    qry_str = f"SELECT modelcard_data FROM modelcard WHERE id = {mc_id};"
+    action_str = "query"
+    r = psql_database_interface(qry_str, configs, action_str)
+    mc_json = r[0][0]
+    st.session_state.modelcardpage_states['mc_mctoolkit']= mct = mctlib.ModelCardToolkit()
+    st.session_state.modelcardpage_states['mc_modelcard'] = mct.scaffold_assets(mc_json)
+    show_modelcard()
+
 else:
     st.write("You must log in first to start an assessment job.")
     if st.button("Go to User Management Page"):
         st.switch_page("pages/1_user_management.py")
+
+#https://docs.streamlit.io/library/api-reference/utilities/st.query_params
+#st.write("query keys:"+st.query_params.get_all("id")[0])

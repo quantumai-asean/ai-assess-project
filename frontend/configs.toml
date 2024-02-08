@@ -4,3 +4,6 @@ port = 5432
 dbname = "postgres"
 user = "postgres"
 password = "postgres"
+
+[frontend]
+host = "http://localhost:8501"

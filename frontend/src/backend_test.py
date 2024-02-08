@@ -82,8 +82,8 @@ class BACKEND_TEST:
             idx = list(range(self.feature_size))
         else:
             import random
-            whole_idx = list(range(self.feature_size))
-            idx = random.sample(whole_idx, MAX_SIZE)
+            #whole_idx = list(range(self.feature_size))
+            idx = random.sample(range(self.feature_size), MAX_SIZE)
         idx = json.dumps(idx)
         try:
             response = requests.post(f"{self.endpoint}/sample", data=idx, headers=headers)

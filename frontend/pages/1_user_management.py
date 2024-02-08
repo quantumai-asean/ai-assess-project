@@ -2,11 +2,11 @@ import streamlit as st
 import streamlit_pydantic as sp
 
 from src.schemas import *
-import psycopg
 from psycopg import errors
 from hashlib import blake2s
 from src.enums import EnumCountry 
 from src.utils import *
+import pandas as pd
 
 streamlit_session_states_init()
 
@@ -29,9 +29,11 @@ def show_login():
             
             try:
                 login_user_query = f"SELECT id, password, name FROM userlogin WHERE email = '{input_model['email']}'"
-                q = psql_database_interface(qry=login_user_query, configs=st.session_state.confs['database']['server'], action="query")
+                r = psql_database_interface(qry=login_user_query, configs=st.session_state.confs['database']['server'], action="query")
                 h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
                 h.update(input_model['password'].encode())
+
+                q = r[0] #expecting only 1 record
 
                 if q:
                     if q[1] == h.hexdigest():
@@ -122,8 +124,46 @@ def show_create():
         st.session_state.user_logged_in = False
         st.rerun()
 
+# Cache the dataframe so it's only loaded once
+@st.cache_data
+def load_modelcard_records(records, columns=[]):
+    return pd.DataFrame(records, columns=columns) #convert list of dict to dataframe
 
 def show_ModelOwnerView():
+    #display a list of Saved MC in record, and a means to display them
+    #st.dataframe https://docs.streamlit.io/library/api-reference/data/st.dataframe
+    #advanced https://docs.streamlit.io/library/advanced-features/dataframes
+    #column config https://docs.streamlit.io/library/api-reference/data/st.column_config
+    #use data_editor to display the df https://docs.streamlit.io/library/api-reference/data/st.data_editor
+    
+    mc_user_key = st.session_state.user_details["email"] #key to search MC in modelcard table
+    table = "modelcard"
+    mc_column = "modelcard_data"
+    key_column = "email"
+    configs = st.session_state.confs['database']['server']
+    #qry_str = f"SELECT name, version, generated_at, modelcard_data, id  FROM {table} WHERE {key_column} = '{mc_user_key}';"
+    qry_str = f"SELECT name, version, generated_at, id  FROM {table} WHERE {key_column} = '{mc_user_key}';"
+    action_str = "query"
+    r = psql_database_interface(qry_str, configs, action_str)
+
+    # now form the dataframe baed on r
+    df = load_modelcard_records(r, columns=["Model Name","Version","Assessment DateTime", "id"])
+    modelcard_url = st.session_state.confs['frontend']['host']
+    # pass keys to page https://docs.streamlit.io/library/api-reference/utilities/st.query_params
+    # can add user id to skip relogin too ... but need to pass hashed timestamp to expire the link
+
+    f = lambda x: modelcard_url + '/model_management?' + 'mc=' + str(x) + '&usr=' + str(st.session_state.user_details['id'])
+    df["url"] = df["id"].map(f)
+    
+    #create link columns https://docs.streamlit.io/library/api-reference/data/st.column_config/st.column_config.linkcolumn
+    st.data_editor(df[["Model Name","Version","Assessment DateTime","url"]], disabled=True,
+                   column_config={
+                    "url": st.column_config.LinkColumn(
+                        "Link to Saved ModelCard", display_text="Open ModelCard"
+                    ),
+                    }
+                    )
+
     if st.button("Logout"):
         st.session_state.user_logged_in = False
         st.session_state.show_user_login = False
