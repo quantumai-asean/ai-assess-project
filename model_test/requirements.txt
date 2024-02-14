@@ -1,0 +1,5 @@
+fairlearn
+pandas
+scikit-learn
+fastapi
+uvicorn

@@ -19,6 +19,8 @@ services:
 
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
+    
+    platform: "linux/amd64"
 
   db:
     image: postgres:latest
@@ -27,7 +29,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
     env_file:
         - .env
-
+    platform: "linux/amd64"
+    
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
