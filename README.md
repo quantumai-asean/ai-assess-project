@@ -47,4 +47,12 @@
 # References
 [my repos](https://github.com/quantumai-asean/AI-Ethics-Assessment-Project/blob/main/REFERENCES.md)
 
+## Cloud Deployment
+1. build docker image and install all depencies there
+2. deploy compressed source files (using "zip -r app.zip .") with "az webapp deploy --name qai-rai-beta --resource-group sengtak_rg_3983 --src-path app.zip"
+3. use starup command in Configuration "python -m streamlit run frontend/index.py --server.port 8000 --server.address 0.0.0.0"
+4. Enable CORS with wildcard origin *
+5. Add VNet Integration to App
+
+
 

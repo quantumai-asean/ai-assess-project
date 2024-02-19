@@ -1,6 +1,6 @@
 import enum
 import streamlit as st
-import tomllib
+import toml
 import psycopg
 from psycopg import errors
 
@@ -24,9 +24,10 @@ def streamlit_session_states_init():
     if 'confs' not in st.session_state:
         try:
             #https://docs.python.org/3.11/library/tomllib.html#module-tomllib
-            with open("frontend/configs.toml", "rb") as f:
-                confs = tomllib.load(f)
-                st.session_state.confs = confs
+            #with open("frontend/configs.toml", "rb") as f:
+            #    confs = tomllib.load(f)
+            #    st.session_state.confs = confs
+            st.session_state.confs = toml.load("frontend/configs.toml") 
         except Exception as e:
             st.error(e)
     if 'user_logged_in' not in st.session_state:

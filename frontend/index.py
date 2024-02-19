@@ -1,5 +1,4 @@
 import streamlit as st
-import tomllib
 from src.utils import *
 
 streamlit_session_states_init()

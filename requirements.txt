@@ -1,5 +1,6 @@
-git+https://github.com/tensorflow/model-card-toolkit.git
-git+https://github.com/LukasMasuch/streamlit-pydantic.git
+toml
+git+https://github.com/quantumai-asean/model-card-toolkit.git
+git+https://github.com/quantumai-asean/streamlit-pydantic.git
 streamlit>=1.31
 psycopg[binary]
 pycountry
