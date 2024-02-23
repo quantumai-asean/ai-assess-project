@@ -1,9 +1,10 @@
 [database.server]
 host = "qai-rai-beta-server.postgres.database.azure.com"
+#host = "localhost"
 port = 5432
 dbname = "qai-rai-beta-database"
 user = "dttipmwzkw"
 password = "havkew-7kypDi-mopnaq"
 
 [frontend]
-host = "http://localhost:8501"
+host = "https://qai-rai-beta.azurewebsites.net"

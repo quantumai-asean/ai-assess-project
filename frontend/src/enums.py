@@ -4,6 +4,10 @@ class EnumFeatureType(enum.Enum):
     TAB = "Tabular"
     IMG = "Image"
 
+class EnumFairHarmTypes(enum.Enum):
+    ALC = 'Allocation of Resources'
+    QOS = 'Quality of Service'
+
 
 class EnumCountry(enum.Enum):
     AW = 'Aruba'

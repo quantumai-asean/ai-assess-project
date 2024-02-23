@@ -13,6 +13,8 @@ from fairlearn.metrics import (
     false_negative_rate,
     false_positive_rate,
     selection_rate,
+    demographic_parity_difference,
+    demographic_parity_ratio
 )
 from model_card_toolkit.utils.graphics import figure_to_base64str #encode matplotlib figure to string that model card can accept
 
@@ -109,6 +111,8 @@ class BACKEND_TEST:
                 "false positive rate": false_positive_rate,
                 "false negative rate": false_negative_rate,
                 "selection rate": selection_rate,
+                "demographic parity difference" : demographic_parity_difference,
+                "demographic parity ratio":demographic_parity_ratio,
                 "count": count,
             }
             metric_frame = MetricFrame(

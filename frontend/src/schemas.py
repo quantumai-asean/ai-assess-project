@@ -2,8 +2,8 @@ from pydantic import BaseModel, Field, StringConstraints, ConfigDict
 import datetime
 from typing_extensions import Annotated
 import dataclasses
-from typing import Any, Dict, List, Optional, Union
-from .enums import EnumCountry, EnumFeatureType
+from typing import Any, Dict, List, Optional, Union, Set
+from .enums import EnumCountry, EnumFeatureType, EnumFairHarmTypes
 
 
 class pydUserRegistrationInput(BaseModel):
@@ -144,6 +144,9 @@ class pydConsiderations(BaseModel):
   ethical_considerations: str = Field(..., format="multi-line", description="What are the ethical risks involved in application of this model? For each risk, you may also provide a mitigation strategy that you've implemented, or one that you suggest to users.") 
 
 
+class pydFairnessConsiderations(BaseModel):
+  types_of_harms: Set[EnumFairHarmTypes] = Field(..., description="What type of Harm can be associated from the usage of the model?") 
+
 class pydModelCard(BaseModel):
     """This section provides a general, high-level description of the model.
 
@@ -174,3 +177,5 @@ class pydModelCard(BaseModel):
     #Reference: pydReference 
     #Citation: pydCitation 
     interface: pydModelDataInterface 
+    fairness: pydFairnessConsiderations
+    
