@@ -3,7 +3,7 @@ import datetime
 from typing_extensions import Annotated
 import dataclasses
 from typing import Any, Dict, List, Optional, Union, Set
-from .enums import EnumCountry, EnumFeatureType, EnumFairHarmTypes
+from .enums import EnumCountry, EnumFeatureType, EnumFairHarmTypes, EnumAssessmentTypes
 
 
 class pydUserRegistrationInput(BaseModel):
@@ -112,6 +112,10 @@ class pydModelDataInterface(BaseModel):
    api_url: str = Field(..., description="API URL for calling inference and data sampling functions of the model.")
    #data_api : str  = Field(..., description="API endpoint for sampling evaluation dataset, must adhere to specified format")
    feature_type: EnumFeatureType = Field(..., description="Select the type of feature to the model.")
+   applicale_assessment: Set[EnumAssessmentTypes]  = Field(..., description="Select the applicable assessments to the model.")
+
+class pydFairnessConsiderations(BaseModel):
+  types_of_harms: Set[EnumFairHarmTypes] = Field(..., description="What type of Harm can be associated from the usage of the model?") 
 
 class pydConsiderations(BaseModel):
   """Considerations related to model construction, training, and application.
@@ -142,10 +146,9 @@ class pydConsiderations(BaseModel):
   #limitations: str = Field(..., format="multi-line", description="What are the known limitations of the model? This may include technical limitations, or conditions that may degrade model performance.") 
   #tradeoffs: str = Field(..., format="multi-line", description=" What are the known accuracy/performance tradeoffs for the model?") 
   ethical_considerations: str = Field(..., format="multi-line", description="What are the ethical risks involved in application of this model? For each risk, you may also provide a mitigation strategy that you've implemented, or one that you suggest to users.") 
+  fairness_harm: pydFairnessConsiderations
 
 
-class pydFairnessConsiderations(BaseModel):
-  types_of_harms: Set[EnumFairHarmTypes] = Field(..., description="What type of Harm can be associated from the usage of the model?") 
 
 class pydModelCard(BaseModel):
     """This section provides a general, high-level description of the model.
@@ -177,5 +180,5 @@ class pydModelCard(BaseModel):
     #Reference: pydReference 
     #Citation: pydCitation 
     interface: pydModelDataInterface 
-    fairness: pydFairnessConsiderations
+    
     

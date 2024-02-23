@@ -4,6 +4,13 @@ class EnumFeatureType(enum.Enum):
     TAB = "Tabular"
     IMG = "Image"
 
+class EnumAssessmentTypes(enum.Enum):
+    FAIR = 'Fairness/Bias'
+    ROBUST = 'Robustness'
+    EXP = 'Explainability'
+    PD = 'Partial Dependance'
+
+
 class EnumFairHarmTypes(enum.Enum):
     ALC = 'Allocation of Resources'
     QOS = 'Quality of Service'
