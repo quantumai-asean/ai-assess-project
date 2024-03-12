@@ -1,5 +1,16 @@
 import enum
 
+class EnumRAIARiskLevel(enum.Enum):
+    VL = "Very low"
+    LW = "Low"
+    MD = "Medium"
+    HI = "Very low"
+    VH = "Very High"
+
+class EnumRAIAPage1Choice(enum.Enum):
+    LOAD = "Redo Assessment"
+    NEW = "Start a new Assessment"
+
 class EnumFeatureType(enum.Enum):
     TAB = "Tabular"
     IMG = "Image"
@@ -14,6 +25,17 @@ class EnumAssessmentTypes(enum.Enum):
 class EnumFairHarmTypes(enum.Enum):
     ALC = 'Allocation of Resources'
     QOS = 'Quality of Service'
+
+class EnumAITaskTypes(enum.Enum):
+    BINCLS = 'Binary Classification'
+    MCCLS = 'Multiclass Classification'
+    REGR = 'Regression'
+    TXTGEN = 'Text Generation'
+    IMGGEN = 'Image Generation'
+    VIDGEN = 'Video Generation'
+    AUDGEN = 'Audion Generation'
+    NA = 'None of the above'
+
 
 
 class EnumCountry(enum.Enum):

@@ -15,6 +15,31 @@ st.set_page_config(
     page_icon="🚀",
 )
 
+TOTAL_PRE_SURVEY_PAGECNT = 10
+
+def next_page():
+    if st.session_state.modelcardpage_states['sm_registration_page_cnt'] + 1 <= TOTAL_PRE_SURVEY_PAGECNT:
+        st.session_state.modelcardpage_states['sm_registration_page_cnt'] += 1
+    st.rerun()
+    
+    
+    
+
+def previous_page():
+    if st.session_state.modelcardpage_states['sm_registration_page_cnt'] > 0:
+        st.session_state.modelcardpage_states['sm_registration_page_cnt'] -= 1
+
+
+def show_prev_next_buttons():
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("⏮️ Back", on_click=previous_page):
+            pass
+
+#    with col2:
+#        if st.button("Next ⏭️", on_click=next_page):
+#            pass
+
 def expand_performance_metrics(performance):
     expand_perf = [] #mctlib.PerformanceMetric()
     #{'type': 'accuracy', 'value': cat_accuracy, 'slice': 'cat'},
@@ -38,7 +63,7 @@ def set_mcstate(sm:str='', rerun=True):
 
 def show_create_new_assessment():
     st.title("Create New Assessment Job")
-
+    show_prev_next_buttons()
     #or idea: https://github.com/LukasMasuch/streamlit-pydantic/blob/390a45aba7bf8caccc297c335715cc141db490af/src/streamlit_pydantic/ui_renderer.py#L1341
     with st.form(key="model_registration_form"):
         input_model = sp.pydantic_input(key="mc_input_model", model=pydModelCard, group_optional_fields="expander")
@@ -51,20 +76,21 @@ def show_create_new_assessment():
             st.session_state.modelcardpage_states['sm_RunAssessment'] = True
             #set_mcstate('sm_showassessment')
             st.rerun()
+    scroll_to_top(st.session_state.modelcardpage_states['sm_registration_page_cnt'])
 
 
           
 def show_modelassessment():
     st.title("Model Assessment")
-    print("Hi!")
+    #print("Hi!")
     if st.session_state.modelcardpage_states['sm_RunAssessment']:
-        print("hello")
+        #print("hello")
         test_backend = BACKEND_TEST()
         input_model = st.session_state.modelcardpage_states['mc_registration_input']
         ftype = input_model["interface"]["feature_type"]
         endpoint = input_model["interface"]["api_url"]
         if test_backend.check_endpoints(ftype, endpoint):
-            print("ok")
+            #print("ok")
             st.info("Interface validation passed!")
             # initialize mdc and toolkit  
             mct = mctlib.ModelCardToolkit()
@@ -144,6 +170,192 @@ def show_modelcard():
         if st.button("Go to User Management Page"):
             st.switch_page("pages/1_user_management.py")
 
+
+#PreAssessment 
+
+
+        
+
+
+def assessment_landing_page():
+    st.title("Model Assessment")
+    with st.form(key="preAss_page0"):
+        input_model = sp.pydantic_input(key="mc_preAss_page1", model=pydAssessmentLandingPage, group_optional_fields="expander")
+        submit = st.form_submit_button(label="Confirm")
+        if submit:
+            if EnumRAIAPage1Choice(input_model['select_assessment_mode']).name == EnumRAIAPage1Choice.LOAD:
+                #load show load page
+                pass
+            else:
+                #show select new assessment
+                # check if it involves model assessment? questionaires are compulsory ...
+                # Use RAIIA adapted template
+                # pass
+                st.session_state.modelcardpage_states['sm_registration_page_cnt'] = 2
+                st.rerun()
+
+            #next_page()
+
+def manual_assessment_page1():
+    st.title("Project Summary")
+    with st.form(key="preAss_page1"):
+        if 'manual_assessment_page1' in st.session_state:
+            model = pydRAIIA_ProjectSummary.model_validate(st.session_state.manual_assessment_page1)
+        else:
+            model = pydRAIIA_ProjectSummary
+        input_model = sp.pydantic_input(key="mc_preAss_page1", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_page1 = input_model
+            next_page()
+
+
+def manual_assessment_page2():
+    st.title("Identifying Key Factors")
+    with st.form(key="preAss_page2"):
+        if 'manual_assessment_page2' in st.session_state:
+            model = pydRAIIA_Keyfactor.model_validate(st.session_state.manual_assessment_page2)
+        else:
+            model = pydRAIIA_Keyfactor
+        input_model = sp.pydantic_input(key="mc_preAss_page2", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_page2 = input_model
+            next_page()
+
+
+def manual_assessment_fairness():
+    st.title("Principle: Fairness")
+    with st.form(key="preAss_fairness"):
+        if 'manual_assessment_fairness' in st.session_state:
+            model = pydRAIIA_FairnessAssessment.model_validate(st.session_state.manual_assessment_fairness)
+        else:
+            model = pydRAIIA_FairnessAssessment
+        input_model = sp.pydantic_input(key="mc_preAss_fairness", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_fairness = input_model
+            next_page()
+
+
+def manual_assessment_reliability():
+    st.title("Principle: Reliability, Safety and Control")
+    with st.form(key="preAss_reliability"):
+        if 'manual_assessment_reliability' in st.session_state:
+            model = pydRAIIA_ReliabilityAssessment.model_validate(st.session_state.manual_assessment_reliability)
+        else:
+            model = pydRAIIA_ReliabilityAssessment
+        input_model = sp.pydantic_input(key="mc_preAss_reliability", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_reliability = input_model
+            next_page()
+
+
+def manual_assessment_privacysecurity():
+    st.title("Principle: Privacy and Security")
+    with st.form(key="preAss_privacysecurity"):
+        if 'manual_assessment_privacysecurity' in st.session_state:
+            model = pydRAIIA_PrivacyAssessment.model_validate(st.session_state.manual_assessment_privacysecurity)
+        else:
+            model = pydRAIIA_PrivacyAssessment
+        input_model = sp.pydantic_input(key="mc_preAss_privacysecurity", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_privacysecurity = input_model
+            next_page()
+
+
+def manual_assessment_accountability():
+    st.title("Principle: Accountability")
+    with st.form(key="preAss_accountability"):
+        if 'manual_assessment_accountability' in st.session_state:
+            model = pydRAIIA_AccountabilityAssessment.model_validate(st.session_state.manual_assessment_accountability)
+        else:
+            model = pydRAIIA_AccountabilityAssessment
+        input_model = sp.pydantic_input(key="mc_preAss_accountability", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_accountability = input_model
+            next_page()
+
+
+def manual_assessment_transparency():
+    st.title("Principle: Transparency")
+    with st.form(key="preAss_transparency"):
+        if 'manual_assessment_transparency' in st.session_state:
+            model = pydRAIIA_TransparencyAssessment.model_validate(st.session_state.manual_assessment_transparency)
+        else:
+            model = pydRAIIA_TransparencyAssessment
+        input_model = sp.pydantic_input(key="mc_preAss_transparency", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_transparency = input_model
+            next_page()
+
+
+def manual_assessment_humanhappiness():
+    st.title("Principle: Pursuit of human benefits and happiness")
+    with st.form(key="preAss_humanhappiness"):
+        if 'manual_assessment_humanhappiness' in st.session_state:
+            model = pydRAIIA_HumanHappinessAssessment.model_validate(st.session_state.manual_assessment_humanhappiness)
+        else:
+            model = pydRAIIA_HumanHappinessAssessment
+        input_model = sp.pydantic_input(key="mc_preAss_humanhappiness", model=model, group_optional_fields="expander")
+        submit = st.form_submit_button(label="submit")
+        if submit:
+            #save to table tied to user 1
+            st.session_state.manual_assessment_humanhappiness = input_model
+            next_page()
+            
+
+def load_algoassessment_record():
+    st.write("load algo assessment record")
+    st.write("under construction")
+
+preassessment_survey_pages = {
+    0: assessment_landing_page,
+    1: load_algoassessment_record, # load pre-registered model assessment
+    2: manual_assessment_page1, # start RAIIA questionaires -> project summary
+    3: manual_assessment_page2, # start RAIIA questionaires -> key factor
+    4: manual_assessment_fairness, 
+    5: manual_assessment_reliability,
+    6: manual_assessment_privacysecurity,
+    7: manual_assessment_accountability,
+    8: manual_assessment_transparency,
+    9: manual_assessment_humanhappiness,
+    #TOTAL_PRE_SURVEY_PAGECNT: assessment_landing_page
+}
+
+
+
+def show_preassessment_survey():
+#    col1, col2 = st.columns(2)
+    show_prev_next_buttons()
+    idx = st.session_state.modelcardpage_states['sm_registration_page_cnt']
+    preassessment_survey_pages[idx]()
+    scroll_to_top(st.session_state.modelcardpage_states['sm_registration_page_cnt'])
+    
+    
+#    with col1:
+#        if st.button("⏮️ Back", on_click=previous_page):
+#            pass
+
+#    with col2:
+#        if st.button("Next ⏭️", on_click=next_page):
+#            pass
+
+
+
+
+#state machine
 if st.session_state.user_logged_in:
     if st.session_state.modelcardpage_states['sm_showmodelcard']:
         show_modelcard()
@@ -151,7 +363,12 @@ if st.session_state.user_logged_in:
         show_modelassessment()
     else:
         st.session_state.modelcardpage_states['mc_saved'] = False
-        show_create_new_assessment()
+        st.write(st.session_state.modelcardpage_states['sm_registration_page_cnt'])
+        # start with page 1
+        if st.session_state.modelcardpage_states['sm_registration_page_cnt'] < TOTAL_PRE_SURVEY_PAGECNT:
+            show_preassessment_survey()
+        else:   
+            show_create_new_assessment()
 elif len(st.query_params.get_all("mc"))>0:
     mc_id = int(st.query_params.get_all("mc")[0])
     st.session_state.modelcardpage_states['mc_saved'] = True
@@ -170,5 +387,4 @@ else:
     if st.button("Go to User Management Page"):
         st.switch_page("pages/1_user_management.py")
 
-#https://docs.streamlit.io/library/api-reference/utilities/st.query_params
-#st.write("query keys:"+st.query_params.get_all("id")[0])
+
