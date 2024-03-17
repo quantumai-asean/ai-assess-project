@@ -8,3 +8,7 @@ password = "havkew-7kypDi-mopnaq"
 
 [frontend]
 host = "https://qai-rai-beta.azurewebsites.net"
+
+[genai]
+api_key = "AIzaSyDQ1SIza0-BkotiSbJKNLF_OCQ5VmH_ru0"
+model = "gemini-pro"

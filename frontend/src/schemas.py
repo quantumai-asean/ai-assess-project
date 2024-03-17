@@ -177,7 +177,7 @@ class pydModelCard(BaseModel):
     #model_config = ConfigDict(from_attributes=True)
     model_details : pydModelDetails
     versioning: pydVersion
-    considerations: pydConsiderations
+    #considerations: pydConsiderations
     #License: pydLicense
     #Reference: pydReference 
     #Citation: pydCitation 
@@ -225,13 +225,16 @@ class pydRAIIA_ProjectSummary(BaseModel):
   
 class pydRAIIA_KeyfactorTemplate(BaseModel):
   answer: str = Field(..., format="multi-line", description="Answer to the question above")
-  predicted_risk : EnumRAIARiskLevel = Field(..., description="Choose the self-assessment risk level") 
+  #predicted_risk : EnumRAIARiskLevel = Field(..., description="Choose the self-assessment risk level") 
+  predicted_risk : int = Field(0, ge=0, le=5, multiple_of=1, description="Choose the self-assessment risk level. 0 -> no risk. 5 -> Very High Risk.")
 
 class pydRAIIA_AIEthicsPrinciplesTemplate(BaseModel):
   whether_or_how_the_solution_addresses_the_factor : str = Field(..., format="multi-line", description="Answer to the question above")
-  risk_rating : EnumRAIARiskLevel = Field(..., description="risk rating before mitigation") 
+  #risk_rating : EnumRAIARiskLevel = Field(..., description="risk rating before mitigation") 
+  risk_rating : int = Field(0, ge=0, le=5, multiple_of=1, description="risk rating before mitigation. 0 -> no risk. 5 -> Very High Risk.") 
   mitigation_measures : str = Field(..., format="multi-line", description="elaborate your measures to mitigate the risk")
-  revised_risk_rating : EnumRAIARiskLevel = Field(..., description="risk rating after mitigation") 
+  #revised_risk_rating : EnumRAIARiskLevel = Field(..., description="risk rating after mitigation") 
+  revised_risk_rating : int = Field(0, ge=0, le=5, multiple_of=1, description="risk rating after mitigation. 0 -> no risk. 5 -> Very High Risk.")
 
 class pydRAIIA_KeyfactorContext(BaseModel):
   describe_the_context: pydRAIIA_KeyfactorTemplate = Field(..., description="Describe the context in which the AI system is used or deployed.")
@@ -277,60 +280,106 @@ class pydRAIIA_Keyfactor(BaseModel):
   data_privacy: pydRAIIA_KeyfactorDataPrivacy
   human_understandable_ai: pydRAIIA_KeyfactorExplainability
 
+FAIR_QUESTIONS = [
+  "Is the use of the AI System voluntary, incentive-based or compulsory?",
+  "Is the AI System following a deterministic approach as opposed to a probabilistic model?",
+  "Is the AI System making automated decisions affecting the rights and interests of individuals or businesses?",
+  "Does the Organisation understand the lineage of data (where the data originally came from, how it was collected, curated and moved within its Business Unit/Division, and how its accuracy is maintained over time)? Consider keeping a data provenance record.",
+  "Is the data high quality data?",
+  "Is the data used for the training of the AI System representative of the population about which the AI System will make decisions (data accuracy, data quality and data completeness)?",
+  "Does the Organisation have an established and robust selection process in relation to the datasets training the AI System? For example, are there minimum requirements as to the diversity and quality of the datasets used?",
+  "Does the AI System use different datasets for training, testing and validation?",
+  "Did the training process tried to minimise inherent biases like selection bias, wieghting bias, measurement bias, and other biases?",
+  "Is there rigorous testing of the AI System, both before use and periodically afterwards, to ensure that there is no disparate impact on a protected class of individuals?",
+  "How are “edge cases” managed by the AI System?",
+  "Does the Organisation have in place a system to respond to and resolve situations in which the AI System produces discriminatory or unfair outcomes?",
+  "What methodologies have been applied and used in the training of the AI System?",
+  "Does the AI System have a fixed learning phase followed by a static use phase or does it continuously improve? If the latter, how are improvements filtered for bias, quality, etc.?",
+  "What are the risks of bias existing or occurring in the algorithm, the training data, the human designers and developers, and end-users?",
+  "What are the reputational risks for the Organisations of the AI System making biased automated decisions?"
+]  
+
 class pydRAIIA_FairnessAssessment(BaseModel): 
-  risk_factor_1: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the use of the AI System voluntary, incentive-based or compulsory?") 
-  risk_factor_2: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the AI System following a deterministic approach as opposed to a probabilistic model?") 
-  risk_factor_3: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the AI System making automated decisions affecting the rights and interests of individuals or businesses?") 
-  risk_factor_4: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Does the Organisation understand the lineage of data (where the data originally came from, how it was collected, curated and moved within its Business Unit/Division, and how its accuracy is maintained over time)? Consider keeping a data provenance record.")
-  risk_factor_5: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the data high quality data?")
-  risk_factor_6: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the data used for the training of the AI System representative of the population about which the AI System will make decisions (data accuracy, data quality and data completeness)? ")
-  risk_factor_7: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Does the Organisation have an established and robust selection process in relation to the datasets training the AI System? For example, are there minimum requirements as to the diversity and quality of the datasets used?")
-  risk_factor_8: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Does the AI System use different datasets for training, testing and validation?")
-  risk_factor_9: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Did the training process tried to minimise inherent biases like selection bias, wieghting bias, measurement bias, and other biases?")
-  risk_factor_10: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is there rigorous testing of the AI System, both before use and periodically afterwards, to ensure that there is no disparate impact on a protected class of individuals?")
-  risk_factor_11: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="How are “edge cases” managed by the AI System?")
-  risk_factor_12: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Does the Organisation have in place a system to respond to and resolve situations in which the AI System produces discriminatory or unfair outcomes?")
-  risk_factor_13: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="What methodologies have been applied and used in the training of the AI System?")
-  risk_factor_14: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Does the AI System have a fixed learning phase followed by a static use phase or does it continuously improve? If the latter, how are improvements filtered for bias, quality, etc.?")
-  risk_factor_15: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="What are the risks of bias existing or occurring in the algorithm, the training data, the human designers and developers, and end users?")
-  risk_factor_16: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="What are the reputational risks for the Organisations of the AI System making biased automated decisions?")
+  risk_factor_1: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[0]) 
+  risk_factor_2: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[1]) 
+  risk_factor_3: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[2]) 
+  risk_factor_4: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[3])
+  risk_factor_5: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[4])
+  risk_factor_6: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[5])
+  risk_factor_7: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[6])
+  risk_factor_8: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[7])
+  risk_factor_9: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[8])
+  risk_factor_10: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[9])
+  risk_factor_11: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[10])
+  risk_factor_12: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[11])
+  risk_factor_13: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[12])
+  risk_factor_14: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[13])
+  risk_factor_15: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[14])
+  risk_factor_16: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[15])
+
+RELIABILITY_QUESTIONS = [
+  """Is there a clearly defined set of relevant ethical and moral principles in place on the basis of which the AI System is intended to operate, such taking into account all relevant circumstances?
+      \nHave all local standards been identified and taken into account e.g. in relation to geographical, religious and/or social considerations and traditions? 
+      \nAre the underpinning ethical and moral principles periodically validated to ensure on-going accurateness, starting with a validation prior to the design and development of the AI System?""",
+  """Have ethical and moral appropriateness considerations been translated into (technical and/or functional) boundaries affecting the outcome of the AI System’s use (e.g. its decision-making powers)? What is the impact of this on the general accuracy of the outcome of the AI System’s use?""",
+  """Have safety and reliability risk scenarios been identified, both for the AI System’s users and beyond (e.g. potentially indirectly affected stakeholders or society at large), including associated risk metrics and risk levels, in relation to: 
+      \na) the quality and performance of the AI System itself (e.g. design faults, technical defects, low level of accuracy, unintended self-learning capabilities);
+      \nb) the data and assumptions used to develop and train the AI System (e.g. preventing data that are not up-to-date, incomplete and/or non-representative);
+      \nc)  any possible (harmful) use of the AI System or the outcome thereof (e.g. over-reliance, human attachment, addictive user behaviour and manipulation of user behaviour), including any malicious, inappropriate or unintended (dual) use; and
+      \nd) the safety and reliability expectations of the users and their level of sophistication.""",
+  """Has a definition been set of what is considered to be a safe and reliable AI System, and is this definition commonly used and implemented throughout the full lifecycle of design, development, deployment, operation and use of the AI System? 
+      \nHave quantitative analysis or metrics been applied to measure and test the applied definition?
+      \nAre there regulatory requirements that impact the above definition of safety and reliability (e.g. medical devices regulations)?""",
+  """Have clear fault tolerance requirements been set that are considered acceptable in relation to the intended outcome of the AI System’s use? If yes, what is the basis for setting these fault tolerance requirements (e.g. a legacy solution that the AI System will be replacing)?""",
+  "Has the AI System been assessed to determine whether (and if so, the extent to which) it is also safe for, and can be reliably used by, those with special needs or disabilities or those at risk of exclusion?",
+  "Are all safety and reliability considerations as addressed in aforementioned questions expressed in the design and development documentation in sufficient detail?",
+  "How is the AI System’s testability and auditability facilitated?",
+  "Is the testing procedure aligned to the appropriate levels of safety and reliability as needed, taking into account the safety and reliability considerations expressed in the design and development documentation? Does the testing procedure also accommodate for testing of the AI System in “edge cases” (use scenarios that are unlikely to occur but are nonetheless possible)?",
+  "Has a “pilot” deployment been considered to enable testing and refining the operation of the AI System and to expedite the completion of the AI System improve its safety and reliability? If yes, has this pilot been limited in time and users, have users been informed about the specifics of the pilot, and is it possible to safely abort upon short notice?",
+  "Are there any specific human oversight and control measures in place that reflect the safety and reliability risks of the AI System, given the degree of self-learning and autonomous features of the AI System?",
+  "What procedures are in place to ensure the explainability of the AI System’s decision-making process during operation?",
+  "How is the ongoing auditing of the AI System’s safety and reliability organised and facilitated, internally as well as by independent third parties? Aside from exception reporting, does this also include failure analysis to determine causes or fixes for any problems? Is safety audited separately from reliability?",
+  """Are users informed on:
+    \na) the (technical and/or functional) boundaries implemented to affect the outcome of the AI System’s use;
+    \nb) the potential safety and reliability risks of the AI System to the users (e.g. the level of accuracy of the AI System to be expected by users); and
+    \nc) the duration of coverage and schedules timeframes for security and other updates to improve the safety and/or reliability of the AI System?""",
+  "Contrary to Q14, does the AI System serve primarily to empower workers (by providing them with effective tools, skills or knowledge to assist them in the workplace)?",
+  "Are there environmental risks associated with the AI System (including excessive pollution, or excessive energy or non-renewable resource consumption)?",
+  "Contrary to Q16, does the AI System facilitate the environmentally and energy-efficient use of resources?",
+  "Are there military or lethal uses for the proposed AI System? If so, answer Q19 and Q20 as appropriate. If no, go to Q21.",
+  "Is there a process in place to continuously measure and assess safety and reliability risks in accordance with the risk metrics and risk levels defined in advance for each specific use case?",
+  "Are there procedures and/or measures in place that ensure comprehensive and transparent investigation of adverse, unanticipated and/or undesirable alterations to or outcomes of the AI System, in particular in the event of resulting harm to the safety of its users or beyond (e.g. to society at large), and that mitigate any risks of such resulting harm occurring?",
+  "Is there a mechanism in place that allows for designers, developers, users, stakeholders and third parties to (anonymously) flag/report vulnerabilities and other issues related to the safety and reliability of the AI System?",
+  "Are there tested failsafe fall-back plans to address the AI System’s errors of whatever origin, including governance procedures to trigger them?",
+  "Is the AI System designed in such a way (e.g. by including a ‘stop button’) that it can safely and elegantly abort the deployment and/or operation of the AI System when needed without catastrophic results for the users and beyond?",
+  "How are the results of all risk assessment, risk management and risk control procedures in relation to safety and reliability of the AI System factored into necessary or desirable alterations of (the design of) the AI System? How is this process documented?"
+]
 
 class pydRAIIA_ReliabilityAssessment(BaseModel):
-  risk_factor_1: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Is there a clearly defined set of relevant ethical and moral principles in place on the basis of which the AI System is intended to operate, such taking into account all relevant circumstances?
-                                                             \nHave all local standards been identified and taken into account e.g. in relation to geographical, religious and/or social considerations and traditions? 
-                                                             \nAre the underpinning ethical and moral principles periodically validated to ensure on-going accurateness, starting with a validation prior to the design and development of the AI System?""")
-  risk_factor_2: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Have ethical and moral appropriateness considerations been translated into (technical and/or functional) boundaries affecting the outcome of the AI System’s use (e.g. its decision-making powers)? What is the impact of this on the general accuracy of the outcome of the AI System’s use?""")
-  risk_factor_3: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Have safety and reliability risk scenarios been identified, both for the AI System’s users and beyond (e.g. potentially indirectly affected stakeholders or society at large), including associated risk metrics and risk levels, in relation to: 
-                                                             \na) the quality and performance of the AI System itself (e.g. design faults, technical defects, low level of accuracy, unintended self-learning capabilities);
-                                                             \nb) the data and assumptions used to develop and train the AI System (e.g. preventing data that are not up-to-date, incomplete and/or non-representative);
-                                                             \nc)  any possible (harmful) use of the AI System or the outcome thereof (e.g. over-reliance, human attachment, addictive user behaviour and manipulation of user behaviour), including any malicious, inappropriate or unintended (dual) use; and
-                                                             \nd) the safety and reliability expectations of the users and their level of sophistication.""")
-  risk_factor_4: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Has a definition been set of what is considered to be a safe and reliable AI System, and is this definition commonly used and implemented throughout the full lifecycle of design, development, deployment, operation and use of the AI System? 
-                                                             \nHave quantitative analysis or metrics been applied to measure and test the applied definition?
-                                                             \nAre there regulatory requirements that impact the above definition of safety and reliability (e.g. medical devices regulations)?""")
-  risk_factor_5: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Have clear fault tolerance requirements been set that are considered acceptable in relation to the intended outcome of the AI System’s use? If yes, what is the basis for setting these fault tolerance requirements (e.g. a legacy solution that the AI System will be replacing)?""")
-  risk_factor_6: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Has the AI System been assessed to determine whether (and if so, the extent to which) it is also safe for, and can be reliably used by, those with special needs or disabilities or those at risk of exclusion?")
-  risk_factor_7: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Are all safety and reliability considerations as addressed in aforementioned questions expressed in the design and development documentation in sufficient detail?")
-  risk_factor_8: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="How is the AI System’s testability and auditability facilitated?")
-  risk_factor_9: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the testing procedure aligned to the appropriate levels of safety and reliability as needed, taking into account the safety and reliability considerations expressed in the design and development documentation? Does the testing procedure also accommodate for testing of the AI System in “edge cases” (use scenarios that are unlikely to occur but are nonetheless possible)?")
-  risk_factor_10: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Has a “pilot” deployment been considered to enable testing and refining the operation of the AI System and to expedite the completion of the AI System improve its safety and reliability? If yes, has this pilot been limited in time and users, have users been informed about the specifics of the pilot, and is it possible to safely abort upon short notice?")
-  risk_factor_11: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Are there any specific human oversight and control measures in place that reflect the safety and reliability risks of the AI System, given the degree of self-learning and autonomous features of the AI System?")
-  risk_factor_12: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="What procedures are in place to ensure the explainability of the AI System’s decision-making process during operation?")
-  risk_factor_13: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="How is the ongoing auditing of the AI System’s safety and reliability organised and facilitated, internally as well as by independent third parties? Aside from exception reporting, does this also include failure analysis to determine causes or fixes for any problems? Is safety audited separately from reliability?")
-  risk_factor_14: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Are users informed on:
-                                                              \na) the (technical and/or functional) boundaries implemented to affect the outcome of the AI System’s use;
-                                                              \nb) the potential safety and reliability risks of the AI System to the users (e.g. the level of accuracy of the AI System to be expected by users); and
-                                                              \nc) the duration of coverage and schedules timeframes for security and other updates to improve the safety and/or reliability of the AI System?""")
-  risk_factor_15: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Contrary to Q14, does the AI System serve primarily to empower workers (by providing them with effective tools, skills or knowledge to assist them in the workplace)?")
-  risk_factor_16: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Are there environmental risks associated with the AI System (including excessive pollution, or excessive energy or non-renewable resource consumption)?")
-  risk_factor_17: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Contrary to Q16, does the AI System facilitate the environmentally and energy-efficient use of resources?")
-  risk_factor_18: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Are there military or lethal uses for the proposed AI System? If so, answer Q19 and Q20 as appropriate. If no, go to Q21.")
-  risk_factor_19: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is there a process in place to continuously measure and assess safety and reliability risks in accordance with the risk metrics and risk levels defined in advance for each specific use case?")
-  risk_factor_20: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Are there procedures and/or measures in place that ensure comprehensive and transparent investigation of adverse, unanticipated and/or undesirable alterations to or outcomes of the AI System, in particular in the event of resulting harm to the safety of its users or beyond (e.g. to society at large), and that mitigate any risks of such resulting harm occurring?")
-  risk_factor_21: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is there a mechanism in place that allows for designers, developers, users, stakeholders and third parties to (anonymously) flag/report vulnerabilities and other issues related to the safety and reliability of the AI System?")
-  risk_factor_22: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Are there tested failsafe fall-back plans to address the AI System’s errors of whatever origin, including governance procedures to trigger them?")
-  risk_factor_23: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="Is the AI System designed in such a way (e.g. by including a ‘stop button’) that it can safely and elegantly abort the deployment and/or operation of the AI System when needed without catastrophic results for the users and beyond?")
-  risk_factor_24: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="How are the results of all risk assessment, risk management and risk control procedures in relation to safety and reliability of the AI System factored into necessary or desirable alterations of (the design of) the AI System? How is this process documented?")
+  risk_factor_1: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[0])
+  risk_factor_2: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[1])
+  risk_factor_3: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[2])
+  risk_factor_4: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[3])
+  risk_factor_5: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[4])
+  risk_factor_6: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[5])
+  risk_factor_7: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[6])
+  risk_factor_8: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[7])
+  risk_factor_9: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[8])
+  risk_factor_10: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[9])
+  risk_factor_11: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[10])
+  risk_factor_12: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[11])
+  risk_factor_13: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[12])
+  risk_factor_14: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[13])
+  risk_factor_15: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[14])
+  risk_factor_16: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[15])
+  risk_factor_17: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[16])
+  risk_factor_18: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[17])
+  risk_factor_19: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[18])
+  risk_factor_20: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[19])
+  risk_factor_21: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[20])
+  risk_factor_22: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[21])
+  risk_factor_23: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[22])
+  risk_factor_24: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=RELIABILITY_QUESTIONS[23])
 
 class pydRAIIA_PrivacyAssessment(BaseModel):
   risk_factor_1: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description="""Consider if the data is provided by the individual (originated in direct action taken by the individual) and whether:

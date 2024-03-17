@@ -7,6 +7,8 @@ from src.utils import *
 from src.schemas import *
 from src.backend_test import BACKEND_TEST
 
+from src.llm import compose_qa
+
 streamlit_session_states_init()
 
 #experiments on rendering INput Output
@@ -141,18 +143,6 @@ def show_modelcard():
     html = mct.export_format()
     st.components.v1.html(html, height=1200, scrolling=True)
 
-    
-    #if not st.session_state.modelcardpage_states['mc_saved']:
-    #    with st.form(key="show_modelcard_form"):
-    #        submit = st.form_submit_button(label="Save Model Card")
-    #        if submit:
-    #            st.info("Saving Model Card")
-    #            mc_json = model_card.to_json()
-    #            query_str = f"""INSERT INTO modelcard (name, version, email, modelcard_data) 
-    #            VALUES ('{model_card.model_details.name}','{model_card.model_details.version.name}','{st.session_state.user_details['email']}','{mc_json}'::jsonb);"""
-    #            if psql_database_interface(qry=query_str, configs = st.session_state.confs['database']['server'], action="update"):
-    #                st.info("Model Card saved succesfully!")
-    #            st.session_state.modelcardpage_states['mc_saved'] = True
     if not st.session_state.modelcardpage_states['mc_saved']:
         if st.button("save model card"):
             st.info("Saving Model Card")
@@ -196,50 +186,87 @@ def assessment_landing_page():
 
             #next_page()
 
-def manual_assessment_page1():
+def print_model_propteries(model):
+    #str_properties = {attr: value for attr, value in model.items() if 'risk_rating'==attr}
+    #print('check prop:', str_properties)
+    for attr1, value1 in model.items():
+        for attr2, value2 in value1.items():
+            if "risk_rating" in attr2:
+                print('check prop:', value2)
+
+def calculate_risk_points(model):
+    #str_properties = {attr: value for attr, value in model.items() if 'risk_rating'==attr}
+    #print('check prop:', str_properties)
+
+    total_risks = {'risk_rating':0, 'revised_risk_rating':0}
+
+    for _, value1 in model.items():
+        for attr2, value2 in value1.items():
+            if attr2 == 'risk_rating':
+                total_risks["risk_rating"]  += value2
+            elif attr2 == 'revised_risk_rating':
+                total_risks["revised_risk_rating"] += value2
+
+    return total_risks
+
+
+
+def manual_assessment_projectsummary():
     st.title("Project Summary")
-    with st.form(key="preAss_page1"):
-        if 'manual_assessment_page1' in st.session_state:
-            model = pydRAIIA_ProjectSummary.model_validate(st.session_state.manual_assessment_page1)
+    with st.form(key="preAss_projectsummary"):
+        if 'manual_assessment_projectsummary' in st.session_state:
+            model = pydRAIIA_ProjectSummary.model_validate(st.session_state.manual_assessment_projectsummary)
         else:
             model = pydRAIIA_ProjectSummary
-        input_model = sp.pydantic_input(key="mc_preAss_page1", model=model, group_optional_fields="expander")
+
+        input_model = sp.pydantic_input(key="mc_preAss_projectsummary", model=model, group_optional_fields="expander")
+        
         submit = st.form_submit_button(label="submit")
         if submit:
             #save to table tied to user 1
-            st.session_state.manual_assessment_page1 = input_model
+            st.session_state.manual_assessment_projectsummary = input_model
             next_page()
 
 
-def manual_assessment_page2():
+def manual_assessment_keyfactor():
     st.title("Identifying Key Factors")
-    with st.form(key="preAss_page2"):
-        if 'manual_assessment_page2' in st.session_state:
-            model = pydRAIIA_Keyfactor.model_validate(st.session_state.manual_assessment_page2)
+    with st.form(key="preAss_keyfactor"):
+        if 'manual_assessment_keyfactor' in st.session_state:
+            model = pydRAIIA_Keyfactor.model_validate(st.session_state.manual_assessment_keyfactor)
         else:
             model = pydRAIIA_Keyfactor
-        input_model = sp.pydantic_input(key="mc_preAss_page2", model=model, group_optional_fields="expander")
+        input_model = sp.pydantic_input(key="mc_preAss_keyfactor", model=model, group_optional_fields="expander")
         submit = st.form_submit_button(label="submit")
         if submit:
             #save to table tied to user 1
-            st.session_state.manual_assessment_page2 = input_model
+            st.session_state.manual_assessment_keyfactor = input_model
             next_page()
 
+def check_props (input_class):
+    schema_properties = input_class.schema(by_alias=True).get(
+            "properties", {}
+        )
+    required_properties = input_class.schema(by_alias=True).get(
+            "required", []
+        )
+    print(schema_properties)
+    
 
 def manual_assessment_fairness():
     st.title("Principle: Fairness")
     with st.form(key="preAss_fairness"):
         if 'manual_assessment_fairness' in st.session_state:
-            model = pydRAIIA_FairnessAssessment.model_validate(st.session_state.manual_assessment_fairness)
+            model = pydRAIIA_FairnessAssessment.model_validate(st.session_state.manual_assessment_fairness) # doesnt show enum
         else:
-            model = pydRAIIA_FairnessAssessment
+            model = pydRAIIA_FairnessAssessment 
         input_model = sp.pydantic_input(key="mc_preAss_fairness", model=model, group_optional_fields="expander")
         submit = st.form_submit_button(label="submit")
-        if submit:
+        if submit:          
             #save to table tied to user 1
             st.session_state.manual_assessment_fairness = input_model
+            st.session_state.manual_assessment_fairness_total_risk = calculate_risk_points(input_model)
+            compose_qa(input_model, FAIR_QUESTIONS)
             next_page()
-
 
 def manual_assessment_reliability():
     st.title("Principle: Reliability, Safety and Control")
@@ -253,6 +280,7 @@ def manual_assessment_reliability():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_reliability = input_model
+            st.session_state.manual_assessment_reliability_total_risk = calculate_risk_points(input_model)
             next_page()
 
 
@@ -268,6 +296,7 @@ def manual_assessment_privacysecurity():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_privacysecurity = input_model
+            st.session_state.manual_assessment_privacysecurity_total_risk = calculate_risk_points(input_model) 
             next_page()
 
 
@@ -283,6 +312,7 @@ def manual_assessment_accountability():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_accountability = input_model
+            st.session_state.manual_assessment_accountability_total_risk = calculate_risk_points(input_model)
             next_page()
 
 
@@ -298,6 +328,7 @@ def manual_assessment_transparency():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_transparency = input_model
+            st.session_state.manual_assessment_transparency_total_risk = calculate_risk_points(input_model)
             next_page()
 
 
@@ -313,18 +344,20 @@ def manual_assessment_humanhappiness():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_humanhappiness = input_model
+            st.session_state.manual_assessment_humanhappiness_total_risk = calculate_risk_points(input_model)
             next_page()
             
 
 def load_algoassessment_record():
+    show_prev_next_buttons()
     st.write("load algo assessment record")
     st.write("under construction")
 
 preassessment_survey_pages = {
     0: assessment_landing_page,
     1: load_algoassessment_record, # load pre-registered model assessment
-    2: manual_assessment_page1, # start RAIIA questionaires -> project summary
-    3: manual_assessment_page2, # start RAIIA questionaires -> key factor
+    2: manual_assessment_projectsummary, # start RAIIA questionaires -> project summary
+    3: manual_assessment_keyfactor, # start RAIIA questionaires -> key factor
     4: manual_assessment_fairness, 
     5: manual_assessment_reliability,
     6: manual_assessment_privacysecurity,

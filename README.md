@@ -40,7 +40,7 @@
 
 [ ] try to use VerifyML model card toolkir src to modify report template
         
-
+[ ] GenAI to summarise and comment assessment filing - https://ai.google.dev/tutorials/python_quickstart
 ## note to dev workflow in GitHub codespaces:
 * use conda env "/workspaces/ai-assess-project/.conda"
 
