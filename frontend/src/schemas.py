@@ -226,15 +226,82 @@ class pydRAIIA_ProjectSummary(BaseModel):
 class pydRAIIA_KeyfactorTemplate(BaseModel):
   answer: str = Field(..., format="multi-line", description="Answer to the question above")
   #predicted_risk : EnumRAIARiskLevel = Field(..., description="Choose the self-assessment risk level") 
-  predicted_risk : int = Field(0, ge=0, le=5, multiple_of=1, description="Choose the self-assessment risk level. 0 -> no risk. 5 -> Very High Risk.")
+  predicted_risk : int = Field(0, ge=0, le=5, multiple_of=1, description="Choose the self-assessment risk level. 0:No Risk, 1:Very Low, 2:Low, 3:Medium, 4:High, 5:Very High Risk.")
 
 class pydRAIIA_AIEthicsPrinciplesTemplate(BaseModel):
   whether_or_how_the_solution_addresses_the_factor : str = Field(..., format="multi-line", description="Answer to the question above")
   #risk_rating : EnumRAIARiskLevel = Field(..., description="risk rating before mitigation") 
-  risk_rating : int = Field(0, ge=0, le=5, multiple_of=1, description="risk rating before mitigation. 0 -> no risk. 5 -> Very High Risk.") 
+  risk_rating : int = Field(0, ge=0, le=5, multiple_of=1, description="risk rating before mitigation. 0:No Risk, 1:Very Low, 2:Low, 3:Medium, 4:High, 5:Very High Risk.") 
   mitigation_measures : str = Field(..., format="multi-line", description="elaborate your measures to mitigate the risk")
   #revised_risk_rating : EnumRAIARiskLevel = Field(..., description="risk rating after mitigation") 
-  revised_risk_rating : int = Field(0, ge=0, le=5, multiple_of=1, description="risk rating after mitigation. 0 -> no risk. 5 -> Very High Risk.")
+  revised_risk_rating : int = Field(0, ge=0, le=5, multiple_of=1, description="risk rating after mitigation. 0:No Risk, 1:Very Low, 2:Low, 3:Medium, 4:High, 5:Very High Risk.")
+
+
+KEYFACTOR_QUESTIONS = [
+  #Context
+  "Describe the context in which the AI system is used or deployed.",
+  "Will the AI system be used in a public facing environment?",
+  "What is the target market, industry or sector for the AI system?",
+  #Law
+  "Do the jurisdiction(s) in which the AI Solution will be deployed have data protection laws or regulation that are applicable to its use?",
+  "Does the jurisdiction(s) in which the Project will take place abide by rule of law principles?",
+  "Does this jurisdiction have antidiscrimination laws?",
+  "What are the main regulatory requirements relevant to the use and deployment of the AI System within the targeted market, industry or sector?",
+  "Will the AI System be used across legal jurisdiction borders (whether they be across federal states or national borders)?",
+  "What are the main ethical concerns relevant to the use and deployment of the AI System for the targeted market, industry or sector?",
+  #HumanOVersight
+  "Will the AI System make or participate in making decisions with material impacts on individuals or society?",
+  "What is the expected degree of autonomy of the AI System? Will, for instance, human operators or decision-makers have oversight on individual AI decisions, if any?",
+  "How frequently will there be human oversight over the operation of the AI System?",
+  "What measures would be taken to avoid automation bias or anchoring to the AI System?",
+  "What will be the Organisation's degree of control and responsibility over the finalized AI System?",
+  #StakeHolders - rights
+  "Who will be the main stakeholders affected by the AI System?",
+  "Who are the expected contributing third parties?",
+  "What individual rights and interests will be at stake as a consequence of the use of the AI System?",
+  "Are those rights fundamental or human rights?",
+  #DataRpivacy
+  "What is the type and origin of the data that will be used to train the AI System?",
+  "Will the training data include personal information?",
+  "If personal information are used in the context of the AI System, who are the data subjects?",
+  "What is the level of sensitivity of the data in term of privacy?",
+  #Explanability
+  "What are the technical characteristics of the AI System that could influence the explainability and auditability of the algorithm?",
+  "Can the results of the AI System be explained in humanly understandable terms?"
+]
+
+KEYFACTOR_RISK_CONTEXT = [
+  #Context
+  "The more people the system will interface with, the higher the risk is.",
+  "The more people the system will interface with, the higher the risk is.",
+  "The risk is relative to the impact to livelihoods and how many people will be impacted. For example, if the AI system is deployed on healthcare or military system, the risk is 5. If entertainment, risk is 1.",
+  #Law
+  "The exitance of more laws and regulations implies higher risk.",
+  "The exitance of more laws and regulations implies higher risk.",
+  "The exitance of more laws and regulations implies higher risk.",
+  "The exitance of more regulatory requirements implies higher risk.",
+  "Usage across federal state is risk 3. Across national border is risk 5. Not crossing border is risk 0.",
+  "The more concerns, the higher is the risk.",
+  #HumanOVersight
+  "If it makes decision that impacts the society, risk is 5. If it impacts individuals, risk is 3. Otherwise risk is low.",
+  "The less oversight from human, the higher is the risk. If no oversight at all, risk is 5.",
+  "Risk is inversely proportianl to the frequency. If never the risk is 5."
+  "More relevant measures given implies lower risk. Without any appropriate measure the risk is 5.",
+  "More degree of control over the AI system implies lower risk. Without any control the risk is 5.",
+  #StakeHolders - rights
+  "The more stakeholders affected, the higher is the risk.",
+  "The more third parties involved, the higher is the risk.",
+  "The more rights will be impacted, the higher is the risk",
+  "If it impact human rights, risk is 5. If fundamental rights, risk is 3. Otherwise, risk is 0.",
+  #DataRpivacy
+  "If the source of data potentially leaks sensitive info such as personal data, national security etc, the risk is 5",
+  "If the answer is affirmative, the risk is 5",
+  "The risk is relative to the population size of data subjects",
+  "The risk is relative to the sensitivity of data",
+  #Explanability
+  "The clearer and more details given in the answer, the less is the risk. If no detail is given, risk is 5",
+  "If the answer is a firm negative, the risk is 5, otherwise, the more explainability feature the less is the risk"
+]
 
 class pydRAIIA_KeyfactorContext(BaseModel):
   describe_the_context: pydRAIIA_KeyfactorTemplate = Field(..., description="Describe the context in which the AI system is used or deployed.")

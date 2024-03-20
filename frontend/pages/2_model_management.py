@@ -7,7 +7,7 @@ from src.utils import *
 from src.schemas import *
 from src.backend_test import BACKEND_TEST
 
-from src.llm import compose_qa
+from src.llm import compose_riskassessment_qa, ai_assist_risk_assessment_keyfactors
 
 streamlit_session_states_init()
 
@@ -240,6 +240,8 @@ def manual_assessment_keyfactor():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_keyfactor = input_model
+            st.session_state.manual_assessment_keyfactor_user_total_risk = calculate_risk_points(input_model)
+            st.session_state.manual_assessment_keyfactor_ai_rated_risk = ai_assist_risk_assessment_keyfactors(input_model, KEYFACTOR_QUESTIONS) #to be processed later 
             next_page()
 
 def check_props (input_class):
@@ -265,7 +267,7 @@ def manual_assessment_fairness():
             #save to table tied to user 1
             st.session_state.manual_assessment_fairness = input_model
             st.session_state.manual_assessment_fairness_total_risk = calculate_risk_points(input_model)
-            compose_qa(input_model, FAIR_QUESTIONS)
+            #compose_riskassessment_qa(input_model, FAIR_QUESTIONS)
             next_page()
 
 def manual_assessment_reliability():
