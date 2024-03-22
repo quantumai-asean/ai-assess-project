@@ -43,7 +43,7 @@ SUGGESTION_PROMPT = "Suggest to user how his/her orgarnisation can improve."
 def generate_response(prompt=""):
     response = model.generate_content(prompt)
     try:
-        print(response.text)
+        #print(response.text)
         return response.text
     except ValueError:
         # If the response doesn't contain text, check if the prompt was blocked.
@@ -72,6 +72,36 @@ def compose_riskassessment_qa (input_model, questions, ai_principle = "Fairness"
             elif "mitigation_measures" == att2: 
                 qa  += f"M: {val2}\n\n"
     #print(qa)
+                
+def ai_assist_risk_assessment_principles (input_model, questions=[], risk_context=[], principle="Fairness and Discrimination"):
+    RISK_OPENING = f"You will review the Answer given by user to question on Responsible AI Risk Assessment, particularly on {principle} Risk Factor below, with risk rating in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk."
+    MITIGATION_OPENING = f"You will then review the Mitigation solution given. Rate the Revised Risk rating of the risk factor in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk, depending on whether the mitigation method can reduce/eliminate the risk factor."
+    COMMON = """If the user doesnt answer the question, or the answer is not relevant, you rate it with risk of 5.
+    Constraint: generate your response in JSON with 4 keys, 'Risk:' for risk rating integer before mitigation, 'Reason:' to state your justification for the risk rating, 
+    'Revised Risk': for revised risk rating integer when the mitigation step is taken, 'Reason for Revised Risk': the justification for the revised risk rating.
+    """
+    risk_rating_list = []
+    
+    for idx, (att1, val1) in enumerate(input_model.items()): 
+        qa = RISK_OPENING + MITIGATION_OPENING + risk_context[idx] + COMMON 
+        qa  += f"Question: {questions[idx]}\n"
+        for att2, val2 in val1.items():
+            #print(att2, val2)
+            if "whether_or_how_the_solution_addresses_the_factor" == att2:
+                qa += f"Answer: {val2}\n"
+
+            if "mitigation_measures" == att2: 
+                qa += f"Mitigation: {val2}\n"
+                risk_rating = generate_response(qa) 
+                risk_rating_list += [risk_rating]
+                print("qa: ", qa)
+                print("risk rating given:", risk_rating, "\n\n")
+
+
+    #print(qa)
+                
+
+
 #Based on the answer given to our question, give your risk assessment to the answer in integer from 0 to 5, where 0 = no risk, 1 for Very Low Risk, 2 for Low Risk , 3 for Medium Risk, 4 for High Risk and 5 for Very High Risk. 
 #Risk means the potential impact to stake-holders, general public, fundamental and human rights, data privacy, infringement of laws and regulations, etc. 
 def ai_assist_risk_assessment_keyfactors(key_factormodel, questions):
@@ -93,7 +123,7 @@ def ai_assist_risk_assessment_keyfactors(key_factormodel, questions):
                 #print("av3", att3, val3)
                 if "answer" == att3:
                     qa  += f"Answer: {val3}\n"
-                    qa  += "Risk:"
+                    #qa  += "Risk:"
                     print("qa: ", qa)
                     risk_rating = generate_response(qa) 
                     print("risk rating given:", risk_rating, "\n\n")

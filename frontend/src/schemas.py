@@ -304,40 +304,40 @@ KEYFACTOR_RISK_CONTEXT = [
 ]
 
 class pydRAIIA_KeyfactorContext(BaseModel):
-  describe_the_context: pydRAIIA_KeyfactorTemplate = Field(..., description="Describe the context in which the AI system is used or deployed.")
-  public_facing: pydRAIIA_KeyfactorTemplate = Field(..., description="Will the AI system be used in a public facing environment?")
-  target: pydRAIIA_KeyfactorTemplate = Field(..., description="What is the target market, industry or sector for the AI system?")
+  describe_the_context: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[0])
+  public_facing: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[1])
+  target: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[2])
 
 class pydRAIIA_KeyfactorLaws(BaseModel):
-  data_protection: pydRAIIA_KeyfactorTemplate = Field(..., description="Do the jurisdiction(s) in which the AI Solution will be deployed have data protection laws or regulation that are applicable to its use?") 
-  rule_of_law: pydRAIIA_KeyfactorTemplate = Field(..., description="Does the jurisdiction(s) in which the Project will take place abide by rule of law principles?")
-  antidiscrimination: pydRAIIA_KeyfactorTemplate = Field(..., description="Does this jurisdiction have antidiscrimination laws?")
-  regulatory_requirements: pydRAIIA_KeyfactorTemplate = Field(..., description="What are the main regulatory requirements relevant to the use and deployment of the AI System within the targeted market, industry or sector?")
-  cross_border_jurisdiction: pydRAIIA_KeyfactorTemplate = Field(..., description="Will the AI System be used across legal jurisdiction borders (whether they be across federal states or national borders)?")
-  ethical_concerns: pydRAIIA_KeyfactorTemplate = Field(..., description="What are the main ethical concerns relevant to the use and deployment of the AI System for the targeted market, industry or sector?")
+  data_protection: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[3]) 
+  rule_of_law: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[4])
+  antidiscrimination: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[5])
+  regulatory_requirements: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[6])
+  cross_border_jurisdiction: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[7])
+  ethical_concerns: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[8])
 
 class pydRAIIA_KeyfactorHumanOversight(BaseModel):  
-  material_impact: pydRAIIA_KeyfactorTemplate = Field(..., description="Will the AI System make or participate in making decisions with material impacts on individuals or society?") 
-  degree_of_autonomy: pydRAIIA_KeyfactorTemplate = Field(..., description="What is the expected degree of autonomy of the AI System? Will, for instance, human operators or decision-makers have oversight on individual AI decisions, if any?") 
-  frequency_of_human_oversight: pydRAIIA_KeyfactorTemplate = Field(..., description="How frequently will there be human oversight over the operation of the AI System?")
-  automation_bias_avoidance: pydRAIIA_KeyfactorTemplate = Field(..., description="What measures would be taken to avoid automation bias or anchoring to the AI System?") 
-  control: pydRAIIA_KeyfactorTemplate = Field(..., description="What will be the Organisation’s degree of control and responsibility over the finalized AI System?") 
+  material_impact: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[9]) 
+  degree_of_autonomy: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[10]) 
+  frequency_of_human_oversight: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[11])
+  automation_bias_avoidance: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[12]) 
+  control: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[13]) 
 
 class pydRAIIA_KeyfactorStakeHolders(BaseModel): 
-  stakeholders: pydRAIIA_KeyfactorTemplate = Field(..., description="Who will be the main stakeholders affected by the AI System?") 
-  third_parties: pydRAIIA_KeyfactorTemplate = Field(..., description="Who are the expected contributing third parties?") 
-  individual_rights_and_interests: pydRAIIA_KeyfactorTemplate = Field(..., description="What individual rights and interests will be at stake as a consequence of the use of the AI System?") 
-  fundamental_or_human_rights: pydRAIIA_KeyfactorTemplate = Field(..., description="Are those rights fundamental or human rights?")  
+  stakeholders: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[14]) 
+  third_parties: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[15]) 
+  individual_rights_and_interests: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[16]) 
+  fundamental_or_human_rights: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[17])  
 
 class pydRAIIA_KeyfactorDataPrivacy(BaseModel):  
-  origin_of_data: pydRAIIA_KeyfactorTemplate = Field(..., description="What is the type and origin of the data that will be used to train the AI System?") 
-  privacy_in_data: pydRAIIA_KeyfactorTemplate = Field(..., description="Will the training data include personal information?") 
-  data_subjects: pydRAIIA_KeyfactorTemplate = Field(..., description="If personal information are used in the context of the AI System, who are the data subjects?") 
-  privacy_sensitivity: pydRAIIA_KeyfactorTemplate = Field(..., description="What is the level of sensitivity of the data in term of privacy?") 
+  origin_of_data: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[18]) 
+  privacy_in_data: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[19]) 
+  data_subjects: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[20]) 
+  privacy_sensitivity: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[21]) 
 
 class pydRAIIA_KeyfactorExplainability(BaseModel): 
-  factors_to_explainability: pydRAIIA_KeyfactorTemplate = Field(..., description="What are the technical characteristics of the AI System that could influence the explainability and auditability of the algorithm?") 
-  results_explainability:  pydRAIIA_KeyfactorTemplate = Field(..., description="Can the results of the AI System be explained in humanly understandable terms?") 
+  factors_to_explainability: pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[22]) 
+  results_explainability:  pydRAIIA_KeyfactorTemplate = Field(..., description=KEYFACTOR_QUESTIONS[23]) 
 
 class pydRAIIA_Keyfactor(BaseModel):
   context: pydRAIIA_KeyfactorContext
@@ -348,23 +348,92 @@ class pydRAIIA_Keyfactor(BaseModel):
   human_understandable_ai: pydRAIIA_KeyfactorExplainability
 
 FAIR_QUESTIONS = [
+  #1
   "Is the use of the AI System voluntary, incentive-based or compulsory?",
+  #2
   "Is the AI System following a deterministic approach as opposed to a probabilistic model?",
+  #3
   "Is the AI System making automated decisions affecting the rights and interests of individuals or businesses?",
+  #4
   "Does the Organisation understand the lineage of data (where the data originally came from, how it was collected, curated and moved within its Business Unit/Division, and how its accuracy is maintained over time)? Consider keeping a data provenance record.",
+  #5
   "Is the data high quality data?",
+  #6
   "Is the data used for the training of the AI System representative of the population about which the AI System will make decisions (data accuracy, data quality and data completeness)?",
+  #7
   "Does the Organisation have an established and robust selection process in relation to the datasets training the AI System? For example, are there minimum requirements as to the diversity and quality of the datasets used?",
+  #8
   "Does the AI System use different datasets for training, testing and validation?",
+  #9
   "Did the training process tried to minimise inherent biases like selection bias, wieghting bias, measurement bias, and other biases?",
+  #10
   "Is there rigorous testing of the AI System, both before use and periodically afterwards, to ensure that there is no disparate impact on a protected class of individuals?",
+  #11
   "How are “edge cases” managed by the AI System?",
+  #12
   "Does the Organisation have in place a system to respond to and resolve situations in which the AI System produces discriminatory or unfair outcomes?",
+  #13
   "What methodologies have been applied and used in the training of the AI System?",
+  #14
   "Does the AI System have a fixed learning phase followed by a static use phase or does it continuously improve? If the latter, how are improvements filtered for bias, quality, etc.?",
+  #15
   "What are the risks of bias existing or occurring in the algorithm, the training data, the human designers and developers, and end-users?",
+  #16
   "What are the reputational risks for the Organisations of the AI System making biased automated decisions?"
 ]  
+
+
+# AI assisted Risk Rating
+FAIR_MAIN_CONTEXT = """
+The use of the AI System should be non-discriminatory in terms of accessibility. The AI System should be accessible also to people with disabilities (such as, for instance, limited visual capacity).
+Decisions based on the AI System should be fair and non-discriminatory, judged against the same standards as decision-making processes conducted entirely by humans, and where possible seek to achieve a higher standard of fairness and non-discrimination.
+AI development should be designed to prioritize fairness. This would involve addressing algorithms and data bias from an early stage with a view to ensuring fairness and non-discrimination throughout the whole AI System lifecycle.
+The development of AI must be designed to avoid bias or discrimination against the target users. AI systems must not take a one-size-fits-all approach and needs to address the widest possible range of factors (e.g. age, gender, religion, and ethnicity). This enables equitable access and the active participation of all stakeholders.
+"""
+
+FAIR_RISK_OPENING = "You will review the Answer given by user to question on Responsible AI Risk Assessment, particularly on Fairness and Discrimination Risk Factor below, with risk rating in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk."
+
+FAIR_MITIGATION_OPENING = "You will review the Mitigation solution given by user on Responsible AI Risk Assessment, particularly on Fairness and Discrimination Risk Factor below. Rate the revised risk rating of the risk factor in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk, depending on whether the mitigation method can reduce/eliminate the risk factor."
+
+FAIR_RISK_CONTEXT = [
+  #1
+  "If the AI system is compulsory, risk is 5. If it is voluntary, risk is 1. Icentive-based, risk is 3.",
+  #2
+  "Probablistic model makes it harder to evaluate fairness and discrimination than a deterministic model, so the risk should be higher for probabilistic models.",
+  #3
+  "If the AI is making decision that affects the rights and interest of individuals or businesses, the risk is high",
+  #4
+  "If the answer provides good description on its data governance or data provenance record, then the risk is very low.",
+  #5
+  "If the answer describes traits of good quality data considering aspects in source, governance and etc, the risk is very low.",
+  #6
+  "The risk is inversely proportional to the coverage of the training data to its target user and its completeness.",
+  #7
+  "The risk is inversely proportional to the description of a robust selection process provided in the answer.",
+  #8
+  "If there are seperate datasets for training, testing and validation, the risk is zero. If there is no testing dataset, the risk is very high.",
+  #9
+  "If the answer is positive and provides good description of what effort has been taken to minimise the bias, risk is very low. If the answer is negative, risk is very high.",
+  #10
+  "The risk rating would be very low if the answer implies very rigorous and frequent testing of the AI system after deployment, and gets higher if the test and validation is getting less frequent or less rigorous.",
+  #11
+  "Risk rating is very low when there is good mechanism in place to handle edge-cases. Very high if there is none.",
+  #12
+  "The risk rating is inversey proportional to the system the organization has. A good system implies very low risk. Simple, bad or no system implies high or very high risk.",
+  #13
+  "If the organisation put extra effort in checking the training data for potential biases, validate the AI model output for discrimination and etc, risk rating is very low.",
+  #14
+  "The risk rating would be low if the organization has continous bias detection and filtering mechanism for continously improved AI system. For AI with static learning phase, if the user described a filtering mechanism in his answer the risk will be low as well.",
+  #15
+  "The risk rating is relative to the exitence or occurance of bias in the the algorithm, the training data, the human designers and developers, and end-users.",
+  #16
+  "Risk rating is relative to the magnitude of the reputational risk the Organisations might face."
+  ""
+
+]
+
+
+
 
 class pydRAIIA_FairnessAssessment(BaseModel): 
   risk_factor_1: pydRAIIA_AIEthicsPrinciplesTemplate = Field(..., description=FAIR_QUESTIONS[0]) 
