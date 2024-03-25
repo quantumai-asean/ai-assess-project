@@ -211,7 +211,7 @@ class pydRAIIA_ProjectSummary_PotentialRisksSummary(BaseModel):
 
 class pydRAIIA_ProjectSummary_Summary(BaseModel):
   high_level_technical_and_functional_overview: str = Field(..., format="multi-line", description="Overview of the AI project.")
-  business_driver_and_context: str = Field(..., format="multi-line", description="Overview of the AI project.")
+  business_driver_and_context: str = Field(..., format="multi-line", description="Main driver for the business")
   external_data_sources_and_data_sets: str = Field(..., format="multi-line", description="Descriptions of external datasets used to train the AI model.")
   internal_data_sources_and_data_sets: str = Field(..., format="multi-line", description="Descriptions of internal datasets used to train the AI model.")
   summary_of_potential_risks: pydRAIIA_ProjectSummary_PotentialRisksSummary 

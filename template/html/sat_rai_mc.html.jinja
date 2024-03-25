@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+{% macro render_if_exist(name, value) %}
+  {% if value %}
+    <div>{{name}}: {{value}}</div>
+  {%- endif %}
+{% endmacro %}
+{% macro render_considerations(list) %}
+  {% if list %}
+  <ul>
+  {% for item in list %}
+    <li>{{ item.description }}</li>
+  {% endfor %}
+  </ul>
+  {%- endif %}
+{% endmacro %}
+{% macro render_uri_list(list) %}
+  {% if list %}
+  <ul>
+  {% for item in list %}
+    <li><a href="{{ item }}">{{ item }}</a></li>
+  {% endfor %}
+  </ul>
+  {%- endif %}
+{% endmacro %}
+{% macro render_all_datasets(datasets) %}
+  <div class="col card">
+    <h2>Datasets</h2>
+    {% for dataset in datasets %}
+      <div class="row">
+        <div class="col card">
+          {% if dataset.name %}<h3>{{ dataset.name }}</h3>{% endif %}
+            {% if dataset.description %}<p>{{ dataset.description }}</p>{% endif %}
+            {% if dataset.link %}<a href="{{ dataset.link }}">{{ dataset.link }}</a>{% endif %}
+            {% if dataset.graphics and dataset.graphics.collection %}
+              {{ render_graphics(dataset.graphics.collection) }}
+            {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+{% macro render_graphics(graphics) %}
+  <div class="img-container">
+  {% if graphics.description %}<p>{{ graphics.description }}</p>{% endif %}
+  {% for graph in graphics %}
+    <div class="img-item">
+      <img src='data:image/jpeg;base64,{{ graph.image }}' alt='{{ graph.name }}' />
+    </div>
+  {% endfor %}
+  </div>
+{% endmacro %}
+{% macro render_license(license) %}
+{% if license.identifier %}
+                <li>{{ license.identifier }}{% endif %}{% if license.custom_text %}{{ license.custom_text }}{% endif %}</li>
+{% endmacro %}
+{% macro metric_name(metric) %}
+{{ metric.type }}{% if metric.threshold %}@{{ metric.threshold }}{% endif %}{% if metric.slice %}, {{ metric.slice }}{% endif %}
+{% endmacro %}
+{% macro metric_value(metric) %}
+{{ metric.value }}{% if metric.confidence_interval %} ({{ metric.confidence_interval.lower_bound }}, {{ metric.confidence_interval.upper_bound }}){% endif %}
+{% endmacro %}
+{% macro render_quantitative_analysis(quantitative_analysis) %}
+<div class="col card">
+  <h2>Quantitative Analysis</h2>
+  {% if quantitative_analysis.performance_metrics %}
+    {{ render_metrics_table(quantitative_analysis.performance_metrics )}}
+  {% endif %}
+  {% if quantitative_analysis.graphics.collection %}
+    {{ render_metrics_graphics(quantitative_analysis.graphics) }}
+  {% endif %}
+</div>
+{% endmacro %}
+{% macro render_metrics_table(metrics) %}
+<table class="center">
+  <caption>Performance Metrics</caption>
+  <tr><th>Name</th><th>Value</th></tr>
+{% for metric in metrics %}
+  <tr><td>{{ metric_name(metric) }}</td><td>{{ metric_value(metric) }}</td></tr>
+{% endfor %}
+</table>
+{% endmacro %}
+{% macro render_metrics_graphics(graphics) %}
+  <div class="row">
+    <div class="col">
+      {% if graphics.description %}<p>{{ graphics.description }}</p>{% endif %}
+      {{ render_graphics(graphics.collection) }}
+    </div>
+  </div>
+{% endmacro %}
+<html lang="en">
+<head>
+<style>
+  h1 {text-align: center;}
+  .row {
+    display: flex;
+  }
+  .col {
+    flex: 1;
+  }
+  .card {
+    padding: 1em;
+    border: 1px solid #DADCE0;
+    margin: 10px;
+  }
+  .img-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    text-align: center;
+  }
+  .img-item {
+    flex: 1;
+  }
+  .center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  table {
+    margin-bottom: 10px;
+    border-collapse: collapse;
+  }
+  td, th {
+    padding: 8px;
+  }
+
+  /* Style the first column (headers) */
+  td:first-child {
+    font-weight: bold;
+  }
+
+  /* Hide border lines */
+  table, th, td {
+   border: none;
+  }
+  caption { font-weight: bold; }
+</style>
+<title>
+  Responsible AI Self-assessment {% if saProjectSummary.background.project_name %} for {{ saProjectSummary.background.project_name }}{% endif %}
+</title>
+</head>
+<body>
+  <h1>
+     Responsible AI Self-assessment {% if saProjectSummary.background.project_name %} for {{ saProjectSummary.background.project_name }}{% endif %}
+  </h1>
+  
+
+<div class="row">
+    {% if saProjectSummary%}
+    <div class="col card">
+      <h2>Project Background</h2>
+        {% if saProjectSummary.background %}
+          <table>
+              <tbody>
+                  <tr>
+                    <td>Project Name</td>
+                    <td>{{saProjectSummary.background.project_name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Business Segment</td>
+                    <td>{{saProjectSummary.background.business_segment }}</td>
+                  </tr>
+                  <tr>
+                    <td>Project Start Date</td>
+                    <td>{{saProjectSummary.background.project_start_date }}</td>
+                  </tr>
+                  <tr>
+                    <td>AI Launch Date</td>
+                    <td>{{saProjectSummary.background.ai_system_launch_date }}</td>
+                  </tr>
+                  <tr>
+                    <td>Region</td>
+                    <td>{{saProjectSummary.background.region }}</td>
+                  </tr>
+                  <tr>
+                    <td>Responsible Person</td>
+                    <td>{{saProjectSummary.background.responsible_person }}</td>
+                  </tr>
+              </tbody>
+          </table>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    {% if saProjectSummary%}
+    <div class="col card">
+      <h2>Project Summary</h2>
+        {% if saProjectSummary.summary %}
+          <table>
+              <tbody>
+                  <tr>
+                    <td>High Level Technical and Functional Overview</td>
+                    <td>{{saProjectSummary.summary.high_level_technical_and_functional_overview}}</td>
+                  </tr>
+                  <tr>
+                    <td>Business Driver and Context</td>
+                    <td>{{saProjectSummary.summary.business_driver_and_context }}</td>
+                  </tr>
+                  <tr>
+                    <td>External Data Sources and Datasets</td>
+                    <td>{{saProjectSummary.summary.internal_data_sources_and_data_sets }}</td>
+                  </tr>
+                  <tr>
+                    <td>Internal Data Sources and Datasets</td>
+                    <td>{{saProjectSummary.summary.external_data_sources_and_data_sets }}</td>
+                  </tr>
+                  <tr>
+                    <td>Legal Risks</td>
+                    <td>{{saProjectSummary.summary.legal_risk }}</td>
+                  </tr>
+                  <tr>
+                    <td>Reputational Risks</td>
+                    <td>{{saProjectSummary.summary.reputational_risk }}</td>
+                  </tr>
+                  <tr>
+                    <td>Ethical Risks</td>
+                    <td>{{saProjectSummary.summary.ethical_risk }}</td>
+                  </tr>
+                  <tr>
+                    <td>Environmental Risks</td>
+                    <td>{{saProjectSummary.summary.environmental_risk }}</td>
+                  </tr>
+                  <tr>
+                    <td>External Related Documents</td>
+                    <td>{{saProjectSummary.summary.external_related_documents }}</td>
+                  </tr>
+                  <tr>
+                    <td>Governance Model</td>
+                    <td>{{saProjectSummary.summary.governance_model }}</td>
+                  </tr>
+                  <tr>
+                    <td>Project Team</td>
+                    <td>{{saProjectSummary.summary.project_team }}</td>
+                  </tr>
+              </tbody>
+          </table>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+
+    {% if model_parameters.data %}
+      {{ render_all_datasets(model_parameters.data) }}
+    {% endif %}
+    {% if quantitative_analysis.performance_metrics or quantitative_analysis.graphics.collection %}
+      {{ render_quantitative_analysis(quantitative_analysis) }}
+    {% endif %}
+
+
+</body>
+</html>
