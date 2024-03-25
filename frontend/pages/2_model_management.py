@@ -240,8 +240,8 @@ def manual_assessment_keyfactor():
         if submit:
             #save to table tied to user 1
             st.session_state.manual_assessment_keyfactor = input_model
-            st.session_state.manual_assessment_keyfactor_user_total_risk = calculate_risk_points(input_model)
-            st.session_state.manual_assessment_keyfactor_ai_rated_risk = ai_assist_risk_assessment_keyfactors(input_model, KEYFACTOR_QUESTIONS) #to be processed later 
+            #st.session_state.manual_assessment_keyfactor_user_total_risk = calculate_risk_points(input_model)
+            #st.session_state.manual_assessment_keyfactor_ai_rated_risk = ai_assist_risk_assessment_keyfactors(input_model, KEYFACTOR_QUESTIONS) #to be processed later 
             next_page()
 
 def check_props (input_class):
@@ -268,7 +268,7 @@ def manual_assessment_fairness():
             st.session_state.manual_assessment_fairness = input_model
             st.session_state.manual_assessment_fairness_total_risk = calculate_risk_points(input_model)
             #compose_riskassessment_qa(input_model, FAIR_QUESTIONS)
-            ai_assist_risk_assessment_principles(input_model, FAIR_QUESTIONS, FAIR_RISK_CONTEXT, "Fairness and Discrimination")
+            #ai_assist_risk_assessment_principles(input_model, FAIR_QUESTIONS, FAIR_RISK_CONTEXT, "Fairness and Discrimination")
             next_page()
 
 def manual_assessment_reliability():

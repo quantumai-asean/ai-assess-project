@@ -1,12 +1,12 @@
 import enum
 
 class EnumRAIARiskLevel(enum.Enum):
-    ZR = "Zero" #0
-    VL = "Very low" #1
-    LW = "Low" #2
-    MD = "Medium" #3
-    HI = "Very low" #4
-    VH = "Very High" #5
+    ZR = "0-Zero" #0
+    VL = "1-Very low" #1
+    LW = "2-Low" #2
+    MD = "3-Medium" #3
+    HI = "4-Very low" #4
+    VH = "5-Very High" #5
 
 class EnumRAIAPage1Choice(enum.Enum):
     LOAD = "Redo Assessment"

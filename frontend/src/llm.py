@@ -117,7 +117,7 @@ def ai_assist_risk_assessment_keyfactors(key_factormodel, questions):
         for idx1, (att2, val2) in enumerate(val1.items()):
             #print("av2", att2, val2)
             qa = system_prompt + KEYFACTOR_RISK_CONTEXT[idx1]
-            qa  += f"Question: {questions[idx1]}\n"
+            qa  += f"\nQuestion: {questions[idx1]}\n"
             #print(questions[idx])
             for att3, val3 in val2.items():
                 #print("av3", att3, val3)

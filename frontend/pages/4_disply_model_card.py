@@ -61,6 +61,9 @@ if 'manual_assessment_projectsummary' in st.session_state:
     model_card.saProjectSummary.summary.governance_model = st.session_state.manual_assessment_projectsummary ['summary']['governance_model']
     model_card.saProjectSummary.summary.project_team = st.session_state.manual_assessment_projectsummary ['summary']['project_team']
 
+if 'manual_assessment_keyfactor' in st.session_state:
+    print(st.session_state.manual_assessment_keyfactor)
+
 
 
 #update mdc into toolkit
