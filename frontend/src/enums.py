@@ -8,6 +8,15 @@ class EnumRAIARiskLevel(enum.Enum):
     HI = "4-Very low" #4
     VH = "5-Very High" #5
 
+RISK_LEVEL = [
+    "0-Zero",
+    "1-Very low",
+    "2-Low", #2
+    "3-Medium", #3
+    "4-High", #4
+    "5-Very High" #5
+]
+
 class EnumRAIAPage1Choice(enum.Enum):
     LOAD = "Redo Assessment"
     NEW = "Start a new Assessment"

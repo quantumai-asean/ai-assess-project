@@ -3,7 +3,7 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import streamlit as st
 from .schemas import *
 from src.utils import *
-
+import ast
 streamlit_session_states_init()
 
 """
@@ -77,8 +77,8 @@ def ai_assist_risk_assessment_principles (input_model, questions=[], risk_contex
     RISK_OPENING = f"You will review the Answer given by user to question on Responsible AI Risk Assessment, particularly on {principle} Risk Factor below, with risk rating in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk."
     MITIGATION_OPENING = f"You will then review the Mitigation solution given. Rate the Revised Risk rating of the risk factor in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk, depending on whether the mitigation method can reduce/eliminate the risk factor."
     COMMON = """If the user doesnt answer the question, or the answer is not relevant, you rate it with risk of 5.
-    Constraint: generate your response in JSON with 4 keys, 'Risk:' for risk rating integer before mitigation, 'Reason:' to state your justification for the risk rating, 
-    'Revised Risk': for revised risk rating integer when the mitigation step is taken, 'Reason for Revised Risk': the justification for the revised risk rating.
+    Constraint: generate your response in dictionary with 4 keys, 'Risk' for risk rating integer before mitigation, 'Reason' to state your justification for the risk rating, 
+    'Revised Risk' for revised risk rating integer when the mitigation step is taken, 'Reason for Revised Risk' the justification for the revised risk rating.
     """
     risk_rating_list = []
     
@@ -109,11 +109,11 @@ def ai_assist_risk_assessment_keyfactors(key_factormodel, questions):
     You will review the answer given by user to question on Responsible AI Risk Assessment.
     Estimate the AI ethical risk from the answer, with risk factor in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk.
     If the user doesnt answer the question, or the answer is not relevant, you rate it with risk of 5.
-    Constraint: generate your response in JSON with 2 keys, 'Risk:' for risk factor integer, 'Reason:' to state your justification.
+    Constraint: generate your response in dictionary with 2 keys, 'Risk' for risk factor integer, 'Reason' to state your justification.
     """
-    
+    risk_rating_list = []
     for att1, val1 in key_factormodel.items():
-        risk_rating_list = []
+        
         for idx1, (att2, val2) in enumerate(val1.items()):
             #print("av2", att2, val2)
             qa = system_prompt + KEYFACTOR_RISK_CONTEXT[idx1]
@@ -123,11 +123,14 @@ def ai_assist_risk_assessment_keyfactors(key_factormodel, questions):
                 #print("av3", att3, val3)
                 if "answer" == att3:
                     qa  += f"Answer: {val3}\n"
-                    #qa  += "Risk:"
-                    print("qa: ", qa)
+                    #print("qa: ", qa)
                     risk_rating = generate_response(qa) 
-                    print("risk rating given:", risk_rating, "\n\n")
-                    risk_rating_list += [risk_rating]
+                    try:
+                        risk_rating = ast.literal_eval(risk_rating)
+                        risk_rating_list += [risk_rating]
+                    except Exception as e:
+                        print(e)
+                        risk_rating_list += [{'Risk':0, 'Reason':''}]
     
     return  risk_rating_list
 

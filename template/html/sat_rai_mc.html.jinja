@@ -241,6 +241,43 @@
 </div>
 
 
+<div class="row">
+    {% if saKeyFactors%}
+    <div class="col card">
+      <h2>Key Factors</h2>
+        {% if saKeyFactors.keyfactor %}
+          {% for item in saKeyFactors.keyfactor  %}
+            <table>
+              <tbody>
+                  <tr>
+                    <td>Factors to Evalate for Assessment</td>
+                    <td>{{ item.risk_factor_question }}</td>
+                  </tr>
+                  <tr>
+                    <td>Answer</td>
+                    <td>{{ item.risk_factor_answer }}</td>
+                  </tr>
+                  <tr>
+                    <td>User Risk Rating</td>
+                    <td>{{ item.user_risk_rating }}</td>
+                  </tr>
+                  <tr>
+                    <td>AI Risk Rating</td>
+                    <td>{{ item.ai_risk_rating }}</td>
+                  </tr>
+                  <tr>
+                    <td>AI Comment</td>
+                    <td>{{ item.ai_risk_reason }}</td>
+                  </tr>
+              </tbody>
+            </table>
+          {% endfor %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+
     {% if model_parameters.data %}
       {{ render_all_datasets(model_parameters.data) }}
     {% endif %}
