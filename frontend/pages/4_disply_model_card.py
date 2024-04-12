@@ -3,19 +3,15 @@ import streamlit as st
 from datetime import date
 import uuid
 import os
+from src.utils import compose_saKeyFactorUserAnswer, draw_KeyFactor_DonutChart
 from src.schemas import *
-from src.llm import ai_assist_risk_assessment_principles, ai_assist_risk_assessment_keyfactors
+from src.llm import ai_assist_risk_assessment_principles, ai_assist_risk_assessment_keyfactors, ai_assist_risk_assessment_keyfactors_lumped
 from src.enums import  RISK_LEVEL 
 
 
 # tutorial from https://www.tensorflow.org/responsible_ai/model_card_toolkit/examples/Scikit_Learn_Model_Card_Toolkit_Demo
 
-def compose_saKeyFactorUserAnswer (key_factormodel):
-  answers = []
-  for att1, val1 in key_factormodel.items():
-    for att2, val2 in val1.items():
-      answers.append(val2)
-  return answers
+
 
 
 
@@ -86,18 +82,34 @@ def display_self_assessment_mc():
         #                                                              ai_risk_rating=RISK_LEVEL[st.session_state.manual_assessment_keyfactor_ai_review[0]['Risk']],
         #                                                              ai_risk_reason=st.session_state.manual_assessment_keyfactor_ai_review[0]['Reason']
         #                                                               ) ]
-        for kf_q, usr_a, ai_rv in zip(KEYFACTOR_QUESTIONS, user_answers, st.session_state.manual_assessment_keyfactor_ai_review):
+
+        #unlumped
+        #for kf_q, usr_a, ai_rv in zip(KEYFACTOR_QUESTIONS, user_answers, st.session_state.manual_assessment_keyfactor_ai_review):
+        #    model_card.saKeyFactors.keyfactor += [ mctlib.saKeyFactorField(risk_factor_question=kf_q, 
+        #                                                              risk_factor_answer=usr_a['answer'],
+        #                                                              user_risk_rating=RISK_LEVEL[usr_a['predicted_risk']],
+        #                                                              ai_risk_rating=RISK_LEVEL[ai_rv['Risk']],
+        #                                                              ai_risk_reason=ai_rv['Reason']
+        #                                                               ) ]
+
+        #lumped
+        for kf_q, usr_a, ai_rv_risk, ai_rv_reason in zip(KEYFACTOR_QUESTIONS, user_answers, st.session_state.manual_assessment_keyfactor_ai_review['Risk'], st.session_state.manual_assessment_keyfactor_ai_review['Reason']):
             model_card.saKeyFactors.keyfactor += [ mctlib.saKeyFactorField(risk_factor_question=kf_q, 
                                                                       risk_factor_answer=usr_a['answer'],
                                                                       user_risk_rating=RISK_LEVEL[usr_a['predicted_risk']],
-                                                                      ai_risk_rating=RISK_LEVEL[ai_rv['Risk']],
-                                                                      ai_risk_reason=ai_rv['Reason']
+                                                                      ai_risk_rating=RISK_LEVEL[ai_rv_risk],
+                                                                      ai_risk_reason=ai_rv_reason
                                                                        ) ]
-        #print(model_card.saKeyFactors.keyfactor)
+            
+        #Add Risks Pie Chart
+        gUser, gAI = draw_KeyFactor_DonutChart(st.session_state.manual_assessment_keyfactor, st.session_state.manual_assessment_keyfactor_ai_review)
+        model_card.saKeyFactors.graphics.collection = [
+                mctlib.Graphic(name='Key Factors User Self-Assessment Risk Distribution', image=gUser),
+                mctlib.Graphic(name='Key Factors AI Assessment Risk Distribution', image=gAI)
+            ]
 
 
-
-        
+        #print(model_card.saKeyFactors.keyfactor)        
         #print(model_card.saKeyFactors.keyfactor)
 
 
@@ -136,7 +148,14 @@ if 'updating_selfassess_mc' not in st.session_state:
     st.session_state['updating_selfassess_mc'] = False
 
 if st.session_state['updating_selfassess_mc'] == False:
-    if st.button("Submit Self-Assessment"):
+
+    if "manual_assessment_keyfactor_ai_review" in st.session_state:
+        display_self_assessment_mc()
+        button_string = "Re-run AI Assessment"
+    else:
+        button_string = "Run AI Assessment"
+
+    if st.button(button_string):
         st.session_state['updating_selfassess_mc'] = True
         st.rerun()
 else:
@@ -144,12 +163,15 @@ else:
         if 'manual_assessment_keyfactor' in st.session_state:
             keyfactor_model = st.session_state.manual_assessment_keyfactor
             #st.session_state.manual_assessment_keyfactor_user_total_risk = calculate_risk_points(input_model)
-            st.session_state.manual_assessment_keyfactor_ai_review = ai_assist_risk_assessment_keyfactors(keyfactor_model, KEYFACTOR_QUESTIONS) #to be processed later 
-            print("Keyfactor AI rated risk: ", st.session_state.manual_assessment_keyfactor_ai_review)
+            
+            #st.session_state.manual_assessment_keyfactor_ai_review = ai_assist_risk_assessment_keyfactors(keyfactor_model, KEYFACTOR_QUESTIONS) #to be processed later 
+            st.session_state.manual_assessment_keyfactor_ai_review = ai_assist_risk_assessment_keyfactors_lumped(keyfactor_model, KEYFACTOR_QUESTIONS)
+            
+            #print("Keyfactor AI rated risk: ", st.session_state.manual_assessment_keyfactor_ai_review)
 
     display_self_assessment_mc()
     st.session_state['updating_selfassess_mc'] = False
-    if st.button("Rerun"):
+    if st.button("Re-run AI Assessment"):
         st.session_state['updating_selfassess_mc'] = True
         st.rerun()
 

@@ -164,9 +164,6 @@ def show_modelcard():
 #PreAssessment 
 
 
-        
-
-
 def assessment_landing_page():
     st.title("Model Assessment")
     with st.form(key="preAss_page0"):
@@ -194,20 +191,7 @@ def print_model_propteries(model):
             if "risk_rating" in attr2:
                 print('check prop:', value2)
 
-def calculate_risk_points(model):
-    #str_properties = {attr: value for attr, value in model.items() if 'risk_rating'==attr}
-    #print('check prop:', str_properties)
 
-    total_risks = {'risk_rating':0, 'revised_risk_rating':0}
-
-    for _, value1 in model.items():
-        for attr2, value2 in value1.items():
-            if attr2 == 'risk_rating':
-                total_risks["risk_rating"]  += value2
-            elif attr2 == 'revised_risk_rating':
-                total_risks["revised_risk_rating"] += value2
-
-    return total_risks
 
 
 

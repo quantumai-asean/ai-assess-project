@@ -134,6 +134,49 @@ def ai_assist_risk_assessment_keyfactors(key_factormodel, questions):
     
     return  risk_rating_list
 
+def ai_assist_risk_assessment_keyfactors_lumped(key_factormodel, questions):
+    system_prompt = """
+    You will review the answers given by user to each question on Responsible AI Risk Assessment.
+    Estimate the AI ethical risk for each of the answer, with risk factor in integer from 0 to 5, where 0 = no risk, 5 = Very High Risk.
+    If the user doesnt answer the question, or the answer is not relevant, you rate it with risk of 5.
+    Constraint: generate your responses in dictionary with 2 keys, 'Risk' for risk factor integer, 'Reason' to state your justification, and the values to each key in List so that the output will be in the form {'Risk':[...], 'Reason':[...]}. 
+    """
+    #risk_rating_list = []
+    qa = system_prompt
+    qidx = 1
+    for att1, val1 in key_factormodel.items():
+        
+        for idx1, (att2, val2) in enumerate(val1.items()):
+            #print("av2", att2, val2)
+            
+            qa  += f"\nQuestion {qidx}: {questions[idx1]} {KEYFACTOR_RISK_CONTEXT[idx1]}\n"
+
+            #print(questions[idx])
+            for att3, val3 in val2.items():
+                #print("av3", att3, val3)
+                if "answer" == att3:
+                    qa  += f"Answer {qidx}: {val3}\n"
+                    #print("qa: ", qa)
+            
+            qidx += 1
+
+    risk_rating = generate_response(qa) 
+    #print("Try Lumped KeyFactor QA: ", qa)
+    #print("Response from AI: ", risk_rating)
+    try:
+        if "```" in risk_rating:
+            risk_rating = risk_rating.replace("```", "")
+        risk_rating = ast.literal_eval(risk_rating)
+        #print("ast processed :", risk_rating)
+        #risk_rating_list += [risk_rating]
+    except Exception as e:
+        print(e)
+        #risk_rating_list += [{'Risk':0, 'Reason':''}]
+        risk_rating = {'Risk':[0], 'Reason':['']}
+    
+    return  risk_rating
+
+
 
 
 

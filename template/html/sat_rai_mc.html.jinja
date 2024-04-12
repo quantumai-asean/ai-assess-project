@@ -273,6 +273,9 @@
             </table>
           {% endfor %}
         {% endif %}
+        {% if saKeyFactors.graphics.collection %}
+          {{ render_metrics_graphics(saKeyFactors.graphics) }}
+        {% endif %}
     </div>
     {% endif %}
 </div>
