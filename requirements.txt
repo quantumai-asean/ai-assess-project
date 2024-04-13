@@ -7,3 +7,8 @@ pycountry
 fairlearn
 google-generativeai 
 
+#added for gcp cloud run
+requests==2.31.0
+debugpy # Required for debugging.
+
+
