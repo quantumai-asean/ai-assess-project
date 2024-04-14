@@ -511,9 +511,15 @@ RELIABILITY_QUESTIONS = [
 
 RELIABILITY_RISK_CONTEXT = [
   #1
-  """The clearer and more details user provides in the answer, the lower is the risk. If the answer provided addresses all the concerns raised by the question then the risk is 1.""",
+  """The clearer and more details user provides in the answer, the lower is the risk.
+     If the AI System has a well-defined and comprehensive set of ethical and moral principles that consider all relevant circumstances, including local standards, and these principles are periodically validated, the risk rating would be 0-2.
+     If the principles are somewhat incomplete or not thoroughly validated, the risk rating would be 3-4.
+     If the principles are poorly defined, do not adequately consider local standards, or lack validation, the risk rating would be 5.""",
   #2
-  """The clearer and more details user provides in the answer, the lower is the risk. If the answer provided addresses all the concerns raised by the question then the risk is 1.""",
+  """The clearer and more details user provides in the answer, the lower is the risk. 
+     If ethical and moral considerations have been thoroughly translated into technical and/or functional boundaries, and these boundaries do not significantly impact the accuracy of the AI System's outcome, the risk rating would be 0-2.
+     If the boundaries are somewhat incomplete or have a moderate impact on accuracy, the risk rating would be 3-4.
+     If the boundaries are poorly defined, do not adequately reflect ethical and moral considerations, or significantly reduce accuracy, the risk rating would be 5.""",
   #3
   """The clearer and more details user provides in the answer, the lower is the risk. If the answer provided addresses all the concerns raised by the question then the risk is 1.""",
   #4
