@@ -3,6 +3,8 @@ import streamlit as st
 import toml
 import psycopg
 from psycopg import errors
+import os
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 def generate_enum(enumClass, enumDict):
     """
@@ -103,15 +105,42 @@ def psql_database_interface(qry:str="", configs: dict = None, action: str = "upd
     #print(q)
     return q
 
-#def scroll_to_top():
-#    js = '''
-#    <script>
-#        var body = window.parent.document.querySelector(".main");
-#        console.log(body);
-#        body.scrollTop = 0;
-#    </script>
-#    '''
-#    st.components.v1.html(js)
+
+def gcp_firestore_add_data(collection, document_id:str, document_data:dict):
+    """
+    https://cloud.google.com/firestore/docs/manage-data/add-data?_gl=1*uodbo1*_up*MQ..&gclid=CjwKCAjwt-OwBhBnEiwAgwzrUoDaTxawX9iiZ0rCWSkFZhtD_jgWEowgC15d0bQJGqBzBfmgmR1UbxoCKjoQAvD_BwE&gclsrc=aw.ds
+    """
+    from google.cloud import firestore
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = st.session_state.confs['gcp']['secret']
+    db = firestore.Client(st.session_state.confs['gcp']['project_id'])
+    db.collection(collection).document(document_id).set(document_data) #this will add new row 
+
+def gcp_firestore_get_data(collection, document_id:str):
+    """
+    https://cloud.google.com/firestore/docs/query-data/get-data?_gl=1*sor8kr*_up*MQ..&gclid=CjwKCAjwt-OwBhBnEiwAgwzrUoDaTxawX9iiZ0rCWSkFZhtD_jgWEowgC15d0bQJGqBzBfmgmR1UbxoCKjoQAvD_BwE&gclsrc=aw.ds
+    """
+    from google.cloud import firestore
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = st.session_state.confs['gcp']['secret']
+    db = firestore.Client(st.session_state.confs['gcp']['project_id'])
+    doc = db.collection(collection).document(document_id).get().to_dict()  
+    return doc
+
+
+def gcp_firestore_query_multiple(collection, filter:FieldFilter):
+    """
+    https://cloud.google.com/firestore/docs/query-data/queries?_gl=1*1ps3v9p*_up*MQ..&gclid=CjwKCAjwt-OwBhBnEiwAgwzrUoDaTxawX9iiZ0rCWSkFZhtD_jgWEowgC15d0bQJGqBzBfmgmR1UbxoCKjoQAvD_BwE&gclsrc=aw.ds#execute_a_query
+    """
+    from google.cloud import firestore
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = st.session_state.confs['gcp']['secret']
+    db = firestore.Client(st.session_state.confs['gcp']['project_id'])
+    docs = db.collection(collection).where(filter=filter).stream()
+    return [doc.to_dict() for doc in docs]
+
+
+
+
+
+
 
 def scroll_to_top(var):
     st.components.v1.html(

@@ -12,3 +12,7 @@ host = "https://qai-rai-beta.azurewebsites.net"
 [genai]
 api_key = "AIzaSyDQ1SIza0-BkotiSbJKNLF_OCQ5VmH_ru0"
 model = "gemini-pro"
+
+[gcp]
+project_id = "civic-advantage-395410"
+secret = "secret/civic-advantage-395410-87f8c32cfc61.json"

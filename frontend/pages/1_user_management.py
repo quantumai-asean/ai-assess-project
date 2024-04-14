@@ -7,6 +7,7 @@ from hashlib import blake2s
 from src.enums import EnumCountry 
 from src.utils import *
 import pandas as pd
+from google.cloud.firestore_v1.base_query import FieldFilter
 
 streamlit_session_states_init()
 
@@ -19,6 +20,7 @@ st.set_page_config(
 
 PASSWORD_DIGEST_SIZE = 32
 PASSWORD_CONSTRAINT = 8
+
 
 def show_login():  
     with st.form(key="user_login_form"):
@@ -60,7 +62,33 @@ def show_login():
         st.session_state.user_logged_in = False
         st.rerun()
 
-
+def show_login_with_firestore(): 
+    collection_name = FIRESTORE_USER_COLLECTION 
+    with st.form(key="user_login_form"):
+        input_model = sp.pydantic_input(key="user_login_model", model=pydUserLogin, group_optional_fields="no")
+        submit = st.form_submit_button(label="submit")
+        if submit:          
+            try:
+                user_record = gcp_firestore_get_data(collection_name, input_model['email'].lower())
+                if user_record is None:
+                    st.warning("User not found")
+                else:                 
+                    h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
+                    h.update(input_model['password'].encode())
+                    if user_record['password'] == h.hexdigest():
+                        st.info("Login success!")
+                        st.session_state.user_logged_in = True
+                        st.session_state.user_details = user_record
+                        st.rerun()
+                    else:
+                        st.warning("Wrong credentials")
+            except Exception as e:
+                st.error(e)
+    if st.button("No profile yet? Create one"):
+        st.session_state.show_user_login = False
+        st.session_state.show_user_register = True
+        st.session_state.user_logged_in = False
+        st.rerun()
 
 def input_validation (input_model) -> bool:   
     if input_model['create_password'] == "":
@@ -89,14 +117,6 @@ def insert_userregistration_database(input_model):
                             VALUES ( '{input_model['name']}', '{input_model['email'].lower()}', '{input_model['url']}',  
                             '{EnumCountry(input_model['country']).name}',  '{h.hexdigest()}' ) 
                             ;"""
-        #with psycopg.connect("host=127.0.0.1 port=5432 dbname=postgres user=postgres password=postgres") as conn:
-        #configs = st.session_state.confs['database']['server']
-        #conn_str = f"host={configs['host']} port={configs['port']} dbname={configs['dbname']} user={configs['user']} password={configs['password']}"
-        #with psycopg.connect(conn_str) as conn:
-        #    with conn.cursor() as cur:
-        #        cur.execute(update_owner_str)
-        #        # Make the changes to the database persistent
-        #    conn.commit()
         psql_database_interface(qry=update_owner_str, configs = st.session_state.confs['database']['server'], action="update")
         st.info("Success!")
         st.session_state.show_user_login = True
@@ -105,6 +125,34 @@ def insert_userregistration_database(input_model):
         st.rerun()
     except errors.UniqueViolation as e:
         st.error("Record with same Name or Email already exists.")
+
+def insert_userregistration_database_with_firestore(input_model):
+    collection_name = FIRESTORE_USER_COLLECTION 
+    try:
+        r = gcp_firestore_get_data(collection_name, input_model['email'].lower())
+        if r is not None:
+            st.warning("Record with same Name or Email already exists. Overwriting record.")
+            #return
+
+        h = blake2s(digest_size=PASSWORD_DIGEST_SIZE)
+        h.update(input_model['create_password'].encode())
+
+        user_record = {
+            "name": input_model['name'],
+            "email": input_model['email'].lower(),
+            "url": input_model['url'],
+            "country": EnumCountry(input_model['country']).name,
+            "password": h.hexdigest(),
+        }
+
+        gcp_firestore_add_data("qai_rai_user_records", input_model['email'].lower(), user_record)
+        st.info("Success!")
+        st.session_state.show_user_login = True
+        st.session_state.show_user_register = False
+        st.session_state.user_logged_in = False
+        st.rerun()
+    except Exception as e:
+        st.error(e)
 
 
 
@@ -117,7 +165,8 @@ def show_create():
             #st.write(input_model)
             #check password
             if input_validation(input_model):
-                insert_userregistration_database(input_model)
+                #insert_userregistration_database(input_model)
+                insert_userregistration_database_with_firestore(input_model)
     if st.button("Login as Registered User"):
         st.session_state.show_user_login = True
         st.session_state.show_user_register = False
@@ -175,6 +224,28 @@ def show_ModelOwnerView():
         st.rerun()
 
 
+def show_ModelOwnerView_firestore():
+    selfmanual_collection_name = FIRESTORE_SELFMANUAL_ASSESSMENT_MC_COLLECTION 
+    algo_collection_name = FIRESTORE_ALGO_ASSESSMENT_MC_COLLECTION
+    mc_user_key = st.session_state.user_details["email"] #key to search MC in modelcard table
+    mc_column = "modelcard_data"
+    key_column = "email"
+
+    r_selfmanual = gcp_firestore_query_multiple(selfmanual_collection_name, FieldFilter("email", "==", mc_user_key))
+    df = pd.DataFrame(r_selfmanual)
+    st.data_editor(df, disabled=True)
+    if st.button("Logout"):
+        st.session_state.user_logged_in = False
+        st.session_state.show_user_login = False
+        st.session_state.show_user_register = False
+        #mode card page
+        st.session_state.modelcardpage_states['sm_showassessment'] = False
+        st.session_state.modelcardpage_states['sm_showmodelcard'] = False
+        
+        st.rerun()
+
+
+
 def show_noop():
     pass
 
@@ -183,11 +254,13 @@ show_function = show_noop
 if st.session_state.user_logged_in:
     # display user's data and user's Model's card
     page_title = "Your Model Cards"
-    show_function = show_ModelOwnerView
+    #show_function = show_ModelOwnerView
+    show_function = show_ModelOwnerView_firestore
     show_button = False
 elif st.session_state.show_user_login:
     page_title = "Login with your credentials"
-    show_function = show_login
+    #show_function = show_login
+    show_function = show_login_with_firestore
     show_button = False
 elif st.session_state.show_user_register:
     page_title = "Create A Model Owner's Profile"

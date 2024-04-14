@@ -5,6 +5,9 @@ import dataclasses
 from typing import Any, Dict, List, Optional, Union, Set
 from .enums import *
 
+FIRESTORE_USER_COLLECTION = "qai_rai_user_records"
+FIRESTORE_ALGO_ASSESSMENT_MC_COLLECTION = "qai_rai_algo_mc_records"
+FIRESTORE_SELFMANUAL_ASSESSMENT_MC_COLLECTION = "qai_rai_selfmanual_mc_records"
 
 class pydUserRegistrationInput(BaseModel):
   """The information about owners of a model.
